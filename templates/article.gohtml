@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="never">
+    <title>{{.RealTitle}}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <!-- 引入 WeUI CDN 链接 -->
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+    <style>
+        .page__bd {
+            max-width: 750px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body data-weui-theme="light">
+
+<div class="page__bd">
+    <article class="weui-article">
+        <h1>{{.RealTitle}}</h1>
+        <p class="page__desc">更新日期：{{.Date}}</p>
+        <section>
+            {{range .Paragraphs}}
+                <h2>{{.Subject}}</h2>
+                <section>
+                    {{range .Bodies}}
+                        {{if eq .Type "text"}}
+                            <p>{{.Content}}</p>
+                        {{else}}
+                            <p class="img-div">
+                                <img src="{{.Content}}">
+                            </p>
+                        {{end}}
+                    {{end}}
+                </section>
+                <br/>
+            {{end}}
+        </section>
+    </article>
+</div>
+</body>
+</html>

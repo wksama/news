@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="never">
+    <title>文章列表</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <!-- 引入 WeUI CDN 链接 -->
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+    <style>
+        .page__bd {
+            max-width: 750px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body data-weui-theme="light">
+
+<div class="page">
+    <div class="page__bd">
+        {{range .}}
+            <div class="weui-cells">
+                <a class="weui-cell  weui-cell_access" href="/date/{{.Score|float64ToString}}">
+                    <div class="weui-cell__bd">
+                        <p>{{.Member}}</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                    </div>
+                </a>
+            </div>
+        {{end}}
+    </div>
+</div>
+</body>
+</html>
