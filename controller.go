@@ -19,7 +19,7 @@ const PAGE_SIZE = 20000000
 func List(ctx *gin.Context) {
 	res := model.Rdb.ZRevRangeWithScores(ctx, "articleList",0, PAGE_SIZE)
 	if len(res.Val()) == 0 {
-		var modelList = make([]model.Article, 10)
+		var modelList []model.Article
 		model.Db.Select("full_title, date").Order("date desc").Find(&modelList)
 
 		for _,item := range modelList {
