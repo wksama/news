@@ -1,7 +1,6 @@
 package bin
 
 import (
-	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -11,8 +10,6 @@ import (
 	"penti/utils"
 	"time"
 )
-
-var ctx = context.Background()
 
 func FetchList() {
 	fmt.Println("fetching list")
@@ -52,7 +49,7 @@ func RenderHtml(ctx *gin.Context) {
 
 		htmlBuffer := utils.RenderHtml(articleStruct)
 		file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
-		ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
+		_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 		fmt.Println("success")
 	}
 }
@@ -61,17 +58,17 @@ func FetchLatestArticle() {
 	fmt.Println("Fetching latest article...")
 	nowDateStr := time.Now().Format("20060102")
 	fmt.Println("Date: " + nowDateStr)
-	latest, _ := model.Rdb.Get(ctx, "latest").Result()
+	latest, _ := model.Rdb.Get(model.Ctx, "latest").Result()
 	if latest != nowDateStr {
 		s := spider.New()
 		url, dateStr := s.FetchLatestArticleUrl()
 		if dateStr == nowDateStr {
 			articleModel := s.FetchArticle(url)
-			model.Rdb.Set(ctx, "latest", dateStr, 0)
+			model.Rdb.Set(model.Ctx, "latest", dateStr, 0)
 			err := model.Db.Create(&articleModel).Error
 			if err != nil {
 				articleStruct := utils.Model2Article(articleModel)
-				model.Rdb.ZAdd(ctx, "articleList", &redis.Z{
+				model.Rdb.ZAdd(model.Ctx, "articleList", &redis.Z{
 					Score: utils.DateToFloat64(articleModel.Date),
 					Member: articleModel.FullTitle,
 				})

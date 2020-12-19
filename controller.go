@@ -41,7 +41,7 @@ func Item(ctx *gin.Context) {
 	var articleModel model.Article
 	model.Db.Where("date = ?", datatypes.Date(dateTime)).First(&articleModel)
 
-	outputPage(utils.GetAbsolutePath(articleModel), ctx)
+	outputPage(articleModel, ctx)
 	return
 }
 
@@ -72,8 +72,17 @@ func HtmlExist(file string) bool {
 	return true
 }
 
-func outputPage(path string, c *gin.Context) {
-	pageStr,_ := ioutil.ReadFile(path)
+func outputPage(articleModel model.Article, c *gin.Context) {
+	dateStr := time.Time(articleModel.Date).Format("20060102")
+	cmd := model.Rdb.Get(model.Ctx, dateStr)
+	pageStr := cmd.Val()
+	if pageStr == "" {
+		path := utils.GetAbsolutePath(articleModel)
+		fileBytes,_ := ioutil.ReadFile(path)
+		pageStr = string(fileBytes)
+		model.Rdb.Set(model.Ctx, dateStr, pageStr, -1)
+	}
+
 	c.Header("Content-Type", "text/html; charset=utf-8")
-	c.String(http.StatusOK, string(pageStr))
+	c.String(http.StatusOK, pageStr)
 }

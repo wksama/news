@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
@@ -11,6 +12,7 @@ import (
 
 var Db *gorm.DB
 var Rdb *redis.Client
+var Ctx = context.Background()
 
 func InitDb() {
 	viper.SetConfigName("config") // name of config file (without extension)
