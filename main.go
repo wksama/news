@@ -5,6 +5,8 @@ import (
 	"github.com/robfig/cron/v3"
 	"html/template"
 	"penti/bin"
+	"penti/controller/admin"
+	"penti/controller/index"
 	"penti/model"
 	"penti/utils"
 )
@@ -13,7 +15,7 @@ func main() {
 	model.InitDb()
 
 	c := cron.New()
-	_, _ = c.AddFunc("* * * * *", bin.FetchLatestArticle)
+	_, _ = c.AddFunc("0 * * * *", bin.FetchLatestArticle)
 	c.Start()
 
 	//gin.SetMode(gin.ReleaseMode)
@@ -25,12 +27,11 @@ func main() {
 
 	r.LoadHTMLGlob("templates/*" )
 
-	r.GET("/", List)
-	r.GET("/render", bin.RenderHtml)
-	r.GET("/init", Init)
-	r.GET("/today", Today)
-	r.GET("/date/:date", Item)
-	//r.GET("/:date", List)
+	r.GET("/", index.List)
+	r.GET("/date/:date", index.Item)
+
+	r.GET("/render", admin.RenderHtml)
+	r.GET("/init", admin.Init)
 
 	r.Run(":9999") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

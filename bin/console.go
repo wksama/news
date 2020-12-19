@@ -2,7 +2,6 @@ package bin
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"io/ioutil"
 	"penti/model"
@@ -27,7 +26,6 @@ func FetchList() {
 		if articleModel.FullTitle != "" {
 			fmt.Println(articleModel.FullTitle)
 			model.Db.Create(&articleModel)
-			fmt.Println(articleModel.ID)
 			articleStruct := utils.Model2Article(articleModel)
 
 			htmlBuffer := utils.RenderHtml(articleStruct)
@@ -38,19 +36,6 @@ func FetchList() {
 
 		fmt.Println("sleeping ...")
 		time.Sleep(2 * time.Second)
-	}
-}
-
-func RenderHtml(ctx *gin.Context) {
-	var articleModels []model.Article
-	model.Db.Find(&articleModels)
-	for _,articleModel := range articleModels {
-		articleStruct := utils.Model2Article(articleModel)
-
-		htmlBuffer := utils.RenderHtml(articleStruct)
-		file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
-		_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
-		fmt.Println("success")
 	}
 }
 
@@ -67,12 +52,12 @@ func FetchLatestArticle() {
 			model.Rdb.Set(model.Ctx, "latest", dateStr, 0)
 			err := model.Db.Create(&articleModel).Error
 			if err != nil {
-				articleStruct := utils.Model2Article(articleModel)
 				model.Rdb.ZAdd(model.Ctx, "articleList", &redis.Z{
 					Score: utils.DateToFloat64(articleModel.Date),
 					Member: articleModel.FullTitle,
 				})
 
+				articleStruct := utils.Model2Article(articleModel)
 				htmlBuffer := utils.RenderHtml(articleStruct)
 				file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
 				ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
