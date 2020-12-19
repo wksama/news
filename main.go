@@ -26,6 +26,7 @@ func main() {
 	r.LoadHTMLGlob("templates/*" )
 
 	r.GET("/", List)
+	r.GET("/render", bin.RenderHtml)
 	r.GET("/init", Init)
 	r.GET("/today", Today)
 	r.GET("/date/:date", Item)
