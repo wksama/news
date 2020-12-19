@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"penti/bin"
 	"penti/model"
 	"penti/utils"
 	"time"
@@ -52,6 +53,14 @@ func Today(ctx *gin.Context) {
 
 	ctx.HTML(http.StatusOK, fmt.Sprintf("%s.html", articleStruct.Date), nil)
 	return
+}
+
+func Init(ctx *gin.Context)()  {
+	_ = os.RemoveAll("./cache")
+	bin.FetchList()
+	ctx.JSON(http.StatusOK, gin.H{
+		"Success": true,
+	})
 }
 
 func HtmlExist(file string) bool {
