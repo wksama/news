@@ -49,9 +49,9 @@ func FetchLatestArticle() {
 		url, dateStr := s.FetchLatestArticleUrl()
 		if dateStr == nowDateStr {
 			articleModel := s.FetchArticle(url)
-			model.Rdb.Set(model.Ctx, "latest", dateStr, 0)
 			err := model.Db.Create(&articleModel).Error
 			if err != nil {
+				model.Rdb.Set(model.Ctx, "latest", dateStr, 0)
 				model.Rdb.ZAdd(model.Ctx, "articleList", &redis.Z{
 					Score: utils.DateToFloat64(articleModel.Date),
 					Member: articleModel.FullTitle,
