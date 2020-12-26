@@ -26,25 +26,44 @@ func GetSaveName(article model.Article) string {
 	return fmt.Sprintf("%s.html", articleDate)
 }
 
-func GetAbsolutePath(article model.Article) string {
+func GetAbsolutePathByArticle(article model.Article) string {
 	return fmt.Sprintf("%s/%s", GetSaveDir(article), GetSaveName(article))
 }
 
-func GetPageContent(articleModel model.Article) string {
-	dateStr := time.Time(articleModel.Date).Format("20060102")
+func GetAbsolutePathByDateStr(dateStr string) string {
+	date, _ := time.ParseInLocation("20060102", dateStr, time.Local)
+	dir := fmt.Sprintf("./cache/html/%d/%d/%d", date.Year(), date.Month(), date.Day())
+	os.MkdirAll(dir, 0777)
+
+	return fmt.Sprintf("%s/%s", dir, fmt.Sprintf("%s.html", dateStr))
+}
+
+func GetPageContentByDateStr(dateStr string) string {
 	cmd := model.Rdb.Get(model.Ctx, dateStr)
 	pageStr := cmd.Val()
 	if pageStr == "" {
-		path := GetAbsolutePath(articleModel)
-		fileBytes,_ := ioutil.ReadFile(path)
-		pageStr = string(fileBytes)
+		path := GetAbsolutePathByDateStr(dateStr)
+		_, err := os.Stat(path)
+		if os.IsNotExist(err) {
+			var articleModel model.Article
+			model.Db.Where("date = ?", Str2Date(dateStr)).First(&articleModel)
+
+			htmlBuffer := RenderHtml(Model2Article(articleModel))
+
+			CacheFile(path, htmlBuffer.Bytes())
+			pageStr = htmlBuffer.String()
+		} else {
+			fileBytes, _ := ioutil.ReadFile(path)
+			pageStr = string(fileBytes)
+		}
+
 		model.Rdb.Set(model.Ctx, dateStr, pageStr, -1)
 	}
 
 	return pageStr
 }
 
-func RenderHtml(data interface{}) *bytes.Buffer {
+func RenderHtml(data Article) *bytes.Buffer {
 	tpl, _ := template.ParseFiles(ARTICLE_TPL)
 	var buf = new(bytes.Buffer)
 	err := tpl.Execute(buf, data)
@@ -53,4 +72,9 @@ func RenderHtml(data interface{}) *bytes.Buffer {
 	}
 
 	return buf
+}
+
+func CacheFile(path string, content []byte) bool {
+	err := ioutil.WriteFile(path, content, 0777)
+	return err == nil
 }

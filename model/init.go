@@ -24,9 +24,11 @@ func InitDb() {
 	}
 
 	dsn := fmt.Sprintf("root:mysql2019@tcp(%s:%s)/penti?charset=utf8mb4&parseTime=True&loc=Local", viper.Get("mysql.host"), viper.Get("mysql.port"))
-	Db, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
+	dbConfig := &gorm.Config{}
+	if !viper.GetBool("app.debug") {
+		dbConfig.Logger = logger.Default.LogMode(logger.Silent)
+	}
+	Db, _ = gorm.Open(mysql.Open(dsn), dbConfig)
 	_ = Db.AutoMigrate(Article{})
 
 	Rdb = redis.NewClient(&redis.Options{

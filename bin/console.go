@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"io/ioutil"
+	"log"
 	"penti/model"
 	"penti/spider"
 	"penti/utils"
@@ -25,13 +26,18 @@ func FetchList() {
 		articleModel := s.FetchArticle(url)
 		if articleModel.FullTitle != "" {
 			fmt.Println(articleModel.FullTitle)
-			model.Db.Create(&articleModel)
-			articleStruct := utils.Model2Article(articleModel)
+			result := model.Db.Create(&articleModel)
+			if result.Error == nil {
+				articleStruct := utils.Model2Article(articleModel)
 
-			htmlBuffer := utils.RenderHtml(articleStruct)
-			file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
-			ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
-			fmt.Println("success")
+				htmlBuffer := utils.RenderHtml(articleStruct)
+				file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
+				ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
+				fmt.Println("success")
+			}else {
+				log.Println(result.Error)
+			}
+
 		}
 
 		fmt.Println("sleeping ...")
@@ -49,8 +55,10 @@ func FetchLatestArticle() {
 		url, dateStr := s.FetchLatestArticleUrl()
 		if dateStr == nowDateStr {
 			articleModel := s.FetchArticle(url)
-			err := model.Db.Create(&articleModel).Error
-			if err != nil {
+			result := model.Db.Create(&articleModel)
+			fmt.Println(result)
+			if result.Error == nil {
+				fmt.Println(nowDateStr + " created")
 				model.Rdb.Set(model.Ctx, "latest", dateStr, 0)
 				model.Rdb.ZAdd(model.Ctx, "articleList", &redis.Z{
 					Score: utils.DateToFloat64(articleModel.Date),

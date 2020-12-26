@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
+	"github.com/spf13/viper"
 	"html/template"
 	"penti/bin"
 	"penti/controller/admin"
@@ -18,7 +19,9 @@ func main() {
 	_, _ = c.AddFunc("0 * * * *", bin.FetchLatestArticle)
 	c.Start()
 
-	//gin.SetMode(gin.ReleaseMode)
+	if !viper.GetBool("app.debug") {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	r := gin.Default()
 	//r.Delims("{[{", "}]}")
 	r.SetFuncMap(template.FuncMap{

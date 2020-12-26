@@ -3,12 +3,10 @@ package index
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
-	"gorm.io/datatypes"
 	"net/http"
 	"penti/model"
 	"penti/utils"
 	"strconv"
-	"time"
 )
 
 const LIST_PAGE_SIZE = 20000000
@@ -40,11 +38,7 @@ func List(ctx *gin.Context) {
 func Item(ctx *gin.Context) {
 	dateStr := ctx.Param("date")
 
-	dateTime, _ := time.ParseInLocation("20060102", dateStr, time.Local)
-	var articleModel model.Article
-	model.Db.Where("date = ?", datatypes.Date(dateTime)).First(&articleModel)
-
-	pageStr := utils.GetPageContent(articleModel)
+	pageStr := utils.GetPageContentByDateStr(dateStr)
 
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
 	ctx.String(http.StatusOK, pageStr)
