@@ -35,6 +35,7 @@ func main() {
 
 	r.GET("/render", admin.RenderHtml)
 	r.GET("/init", admin.Init)
+	r.GET("/latest", admin.FetchLatestArticle)
 
 	r.Run(":9999") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

@@ -2,6 +2,7 @@ package bin
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/go-redis/redis/v8"
 	"io/ioutil"
 	"log"
@@ -46,8 +47,8 @@ func FetchList() {
 }
 
 func FetchLatestArticle() {
-	fmt.Println("Fetching latest article...")
 	nowDateStr := time.Now().Format("20060102")
+	color.Yellow("======正在处理：" + nowDateStr + "======")
 	fmt.Println("Date: " + nowDateStr)
 	latest, _ := model.Rdb.Get(model.Ctx, "latest").Result()
 	if latest != nowDateStr {
@@ -56,9 +57,7 @@ func FetchLatestArticle() {
 		if dateStr == nowDateStr {
 			articleModel := s.FetchArticle(url)
 			result := model.Db.Create(&articleModel)
-			fmt.Println(result)
 			if result.Error == nil {
-				fmt.Println(nowDateStr + " created")
 				model.Rdb.Set(model.Ctx, "latest", dateStr, 0)
 				model.Rdb.ZAdd(model.Ctx, "articleList", &redis.Z{
 					Score: utils.DateToFloat64(articleModel.Date),
@@ -70,8 +69,12 @@ func FetchLatestArticle() {
 				file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
 				ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 
-				fmt.Println(nowDateStr)
+				color.Green(articleModel.FullTitle + "插入数据库成功")
+				utils.FangTang(articleModel.FullTitle, htmlBuffer.String())
+			} else {
+				color.Red(articleModel.FullTitle + "插入数据库错误")
 			}
 		}
 	}
+	color.Yellow("======处理完成：" + nowDateStr + "======")
 }

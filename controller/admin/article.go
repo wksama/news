@@ -30,3 +30,10 @@ func Init(ctx *gin.Context)()  {
 		"Success": true,
 	})
 }
+
+func FetchLatestArticle(ctx *gin.Context) {
+	bin.FetchLatestArticle()
+	ctx.JSON(http.StatusOK, gin.H{
+		"Success": true,
+	})
+}
