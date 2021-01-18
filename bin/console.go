@@ -2,6 +2,7 @@ package bin
 
 import (
 	"fmt"
+	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/fatih/color"
 	"github.com/go-redis/redis/v8"
 	"io/ioutil"
@@ -33,7 +34,7 @@ func FetchList() {
 
 				htmlBuffer := utils.RenderHtml(articleStruct)
 				file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
-				ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
+				_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 				fmt.Println("success")
 			}else {
 				log.Println(result.Error)
@@ -67,10 +68,16 @@ func FetchLatestArticle() {
 				articleStruct := utils.Model2Article(articleModel)
 				htmlBuffer := utils.RenderHtml(articleStruct)
 				file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
-				ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
+				_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 
 				color.Green(articleModel.FullTitle + "插入数据库成功")
-				utils.FangTang(articleModel.FullTitle, htmlBuffer.String())
+
+				go func() {
+					converter := md.NewConverter("", true, nil)
+					html := htmlBuffer.String()
+					markdown, _ := converter.ConvertString(html)
+					utils.FangTang(articleModel.FullTitle, markdown)
+				}()
 			} else {
 				color.Red(articleModel.FullTitle + "插入数据库错误")
 			}
