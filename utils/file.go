@@ -47,6 +47,9 @@ func GetPageContentByDateStr(dateStr string) string {
 		if os.IsNotExist(err) {
 			var articleModel model.Article
 			model.Db.Where("date = ?", Str2Date(dateStr)).First(&articleModel)
+			if articleModel.ID == 0 {
+				return ""
+			}
 
 			htmlBuffer := RenderHtml(Model2Article(articleModel))
 

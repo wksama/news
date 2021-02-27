@@ -39,6 +39,10 @@ func Item(ctx *gin.Context) {
 	dateStr := ctx.Param("date")
 
 	pageStr := utils.GetPageContentByDateStr(dateStr)
+	if pageStr == "" {
+		ctx.Status(http.StatusNotFound)
+		return
+	}
 
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
 	ctx.String(http.StatusOK, pageStr)
