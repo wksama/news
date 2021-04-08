@@ -2,7 +2,6 @@ package bin
 
 import (
 	"fmt"
-	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/fatih/color"
 	"github.com/go-redis/redis/v8"
 	"io/ioutil"
@@ -36,7 +35,7 @@ func FetchList() {
 				file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
 				_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 				fmt.Println("success")
-			}else {
+			} else {
 				log.Println(result.Error)
 			}
 
@@ -61,7 +60,7 @@ func FetchLatestArticle() {
 			if result.Error == nil {
 				model.Rdb.Set(model.Ctx, "latest", dateStr, 0)
 				model.Rdb.ZAdd(model.Ctx, "articleList", &redis.Z{
-					Score: utils.DateToFloat64(articleModel.Date),
+					Score:  utils.DateToFloat64(articleModel.Date),
 					Member: articleModel.FullTitle,
 				})
 

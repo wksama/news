@@ -28,7 +28,7 @@ func main() {
 		"float64ToString": utils.Float64ToString,
 	})
 
-	r.LoadHTMLGlob("templates/*" )
+	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/", index.List)
 	r.GET("/date/:date", index.Item)
