@@ -12,9 +12,13 @@
             max-width: 750px;
             margin: auto;
         }
+
+        body, .body {
+            background-color: var(--weui-BG-0);
+        }
     </style>
 </head>
-<body data-weui-theme="light">
+<body>
 
 <div class="page__bd">
     <article class="weui-article">
@@ -39,6 +43,13 @@
         </section>
     </article>
 </div>
+
+<div class="weui-footer">
+    <p class="weui-footer__links">
+        <a href="{{.Url}}" class="weui-footer__link">喷嚏网</a>
+    </p>
+    <p class="weui-footer__text">本文章来自喷嚏网</p>
+    <p class="weui-footer__text">Power by Wenke</p>
+</div>
 </body>
 </html>
-<script data-ad-client="ca-pub-6713962530496779" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
