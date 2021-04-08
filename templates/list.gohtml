@@ -13,24 +13,22 @@
             margin: auto;
         }
 
-        body[data-weui-theme=dark] {
+        body {
             background-color: var(--weui-BG-0);
-            color: #c9c8c8;
+            color: var(--weui-FG);
         }
     </style>
 </head>
 <body>
 <div class="page__bd">
     {{range .}}
-        <div class="weui-cells">
-            <a class="weui-cell  weui-cell_access" href="/date/{{.Score|float64ToString}}">
-                <div class="weui-cell__bd">
-                    <p>{{.Member}}</p>
-                </div>
-                <div class="weui-cell__ft">
-                </div>
-            </a>
-        </div>
+        <a class="weui-cell  weui-cell_access" href="/date/{{.Score|float64ToString}}">
+            <div class="weui-cell__bd">
+                <p>{{.Member}}</p>
+            </div>
+            <div class="weui-cell__ft">
+            </div>
+        </a>
     {{end}}
 </div>
 </body>
