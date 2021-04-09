@@ -16,7 +16,6 @@ import (
 )
 
 type Spider struct {
-
 }
 
 type Paragraph struct {
@@ -44,7 +43,7 @@ func (a *Spider) FetchPageList(page int) (urlArr []string) {
 	doc.Find(".oblog_t_2 ul li").Each(func(i int, selection *goquery.Selection) {
 		href, exist := selection.Find("a").Attr("href")
 		if exist {
-			urlArr = append(urlArr, "http://www.dapenti.com/blog/" + href)
+			urlArr = append(urlArr, "http://www.dapenti.com/blog/"+href)
 		}
 	})
 	return
@@ -112,7 +111,7 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 					body.Type = "img"
 					body.Content = template.HTML(src)
 				} else if len(selection.Text()) > 0 {
-					if strings.Contains(selection.Text(), "来源：喷嚏网") {
+					if strings.Contains(selection.Text(), "来源：喷嚏网") || strings.Contains(selection.Text(), "item.taobao") {
 						return false
 					}
 					body.Type = "text"
