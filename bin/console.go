@@ -70,7 +70,7 @@ func FetchLatestArticle() {
 				_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 
 				color.Green(articleModel.FullTitle + "插入数据库成功")
-				go utils.Bark(dateStr, articleModel.RealTitle)
+				go utils.Bark(articleModel.RealTitle, dateStr)
 			} else {
 				color.Red(articleModel.FullTitle + "插入数据库错误")
 			}
