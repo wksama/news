@@ -16,7 +16,10 @@ jobs:
       with:
         username: wenkechen
         password: ${{ secrets.DOCKERHUB_SECRET }}
-      
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
