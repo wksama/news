@@ -1,0 +1,39 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
+      
+    - name: GitHub Docker Action
+      # You may pin to the exact commit or the version.
+      # uses: matootie/github-docker@c1290d4f67c6fc0cdf84b2924d6dccf658129b3e
+      uses: matootie/github-docker@v3.1.0
+      with:
+        # GitHub Repository Token to log in using.
+        accessToken: ${{ secrets.GITHUB_TOKEN }}
+        # The desired name for the image. Defaults to current repository name.
+        imageName: penti # optional
+        # The desired tag for the image. Defaults to latest. Optionally accepts multiple tags separated by newline.
+        tag: latest # optional, default is latest
+        # Any additional build arguments to use when building the image, separated by newline.
+        # buildArgs: # optional
