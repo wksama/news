@@ -15,15 +15,15 @@ var Rdb *redis.Client
 var Ctx = context.Background()
 
 func InitDb() {
-	viper.SetConfigName("config") // name of config file (without extension)
-	viper.SetConfigType("yaml") // REQUIRED if the config file does not have the extension in the name
-	viper.AddConfigPath("./config")   // path to look for the config file in
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil { // Handle errors reading the config file
+	viper.SetConfigName("config")   // name of config file (without extension)
+	viper.SetConfigType("yaml")     // REQUIRED if the config file does not have the extension in the name
+	viper.AddConfigPath("./config") // path to look for the config file in
+	err := viper.ReadInConfig()     // Find and read the config file
+	if err != nil {                 // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
 
-	dsn := fmt.Sprintf("root:mysql2019@tcp(%s:%s)/penti?charset=utf8mb4&parseTime=True&loc=Local", viper.Get("mysql.host"), viper.Get("mysql.port"))
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/penti?charset=utf8mb4&parseTime=True&loc=Local", viper.Get("mysql.user"), viper.GetString("mysql.password"), viper.Get("mysql.host"), viper.Get("mysql.port"))
 	dbConfig := &gorm.Config{}
 	if !viper.GetBool("app.debug") {
 		dbConfig.Logger = logger.Default.LogMode(logger.Silent)

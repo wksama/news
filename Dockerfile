@@ -5,6 +5,12 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct
 COPY . .
 RUN go mod tidy
 RUN CGO_ENABLED=0 go build -ldflags="-w -s -extldflags -static"
+
+FROM scratch
+
+COPY --from=builder /go/src/penti/penti /
+COPY --from=builder /go/src/penti/config /config
+COPY --from=builder /go/src/penti/templates /templates
+
 EXPOSE "9999"
-VOLUME /config
-ENTRYPOINT ["./penti"]
+ENTRYPOINT ["/penti"]

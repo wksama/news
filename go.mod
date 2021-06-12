@@ -14,7 +14,7 @@ require (
 	github.com/pelletier/go-toml v1.8.1 // indirect
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/spf13/viper v1.7.1
-	github.com/ugorji/go/codec v1.2.1 // indirect
+	github.com/ugorji/go v1.2.1 // indirect
 	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c // indirect
 	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb // indirect
 	golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e // indirect
