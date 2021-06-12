@@ -1,0 +1,8 @@
+version: "3.1"
+
+services:
+  penti:
+    build: .
+    container_name: "penti"
+    ports:
+    - 9999:9999
