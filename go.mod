@@ -12,6 +12,7 @@ require (
 	github.com/henrylee2cn/mahonia v0.0.0-20150715080413-be6deb105fbc
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/pelletier/go-toml v1.8.1 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/spf13/viper v1.7.1
 	github.com/ugorji/go v1.2.1 // indirect

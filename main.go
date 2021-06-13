@@ -9,21 +9,22 @@ import (
 	"penti/controller/admin"
 	"penti/controller/index"
 	"penti/model"
+	"penti/resources"
 	"penti/utils"
 )
 
 func main() {
-	model.InitDb()
-
 	c := cron.New()
-	_, _ = c.AddFunc("0 * * * *", bin.FetchLatestArticle)
+	_, _ = c.AddFunc("0 14-18 * * *", bin.FetchLatestArticle)
 	c.Start()
+	resources.Init()
+	model.Init()
 
 	if !viper.GetBool("app.debug") {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.Default()
-	//r.Delims("{[{", "}]}")
+
 	r.SetFuncMap(template.FuncMap{
 		"float64ToString": utils.Float64ToString,
 	})
@@ -33,9 +34,11 @@ func main() {
 	r.GET("/", index.List)
 	r.GET("/date/:date", index.Item)
 
-	r.GET("/render", admin.RenderHtml)
-	r.GET("/init", admin.Init)
-	r.GET("/latest", admin.FetchLatestArticle)
+	adminGroup := r.Group("/admin")
+	adminGroup.GET("/render", admin.RenderHtml)
+	adminGroup.GET("/init", admin.Init)
+	adminGroup.GET("/latest", admin.FetchLatestArticle)
+	adminGroup.GET("/fetch", admin.FetchArticle)
 
 	r.Run(":9999") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"penti/model"
+	"penti/resources"
 	"time"
 )
 
@@ -31,39 +32,40 @@ func GetAbsolutePathByArticle(article model.Article) string {
 }
 
 func GetAbsolutePathByDateStr(dateStr string) string {
-	date, _ := time.ParseInLocation("20060102", dateStr, time.Local)
+	date, _ := time.Parse("20060102", dateStr)
 	dir := fmt.Sprintf("./cache/html/%d/%d/%d", date.Year(), date.Month(), date.Day())
 	os.MkdirAll(dir, 0777)
 
 	return fmt.Sprintf("%s/%s", dir, fmt.Sprintf("%s.html", dateStr))
 }
 
-func GetPageContentByDateStr(dateStr string) string {
-	cmd := model.Rdb.Get(model.Ctx, dateStr)
-	pageStr := cmd.Val()
+func GetPageContentByDateStr(dateStr string) (pageStr string) {
+	cmd := resources.RC.Get(resources.Ctx, dateStr)
+	pageStr = cmd.Val()
 	if pageStr == "" {
 		path := GetAbsolutePathByDateStr(dateStr)
 		_, err := os.Stat(path)
 		if os.IsNotExist(err) {
-			var articleModel model.Article
-			model.Db.Where("date = ?", Str2Date(dateStr)).First(&articleModel)
-			if articleModel.ID == 0 {
-				return ""
-			}
-
-			htmlBuffer := RenderHtml(Model2Article(articleModel))
-
-			CacheFile(path, htmlBuffer.Bytes())
-			pageStr = htmlBuffer.String()
+			return ""
+			//var articleModel model.Article
+			//resources.Db.Where("date = ?", Str2Date(dateStr)).First(&articleModel)
+			//if articleModel.ID == 0 {
+			//	return ""
+			//}
+			//
+			//htmlBuffer := RenderHtml(Model2Article(articleModel))
+			//
+			//CacheFile(path, htmlBuffer.Bytes())
+			//pageStr = htmlBuffer.String()
 		} else {
 			fileBytes, _ := ioutil.ReadFile(path)
 			pageStr = string(fileBytes)
 		}
 
-		model.Rdb.Set(model.Ctx, dateStr, pageStr, -1)
+		//resources.RC.Set(resources.Ctx, dateStr, pageStr, -1)
 	}
 
-	return pageStr
+	return
 }
 
 func RenderHtml(data Article) *bytes.Buffer {
