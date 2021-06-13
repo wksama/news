@@ -20,7 +20,7 @@ type Article struct {
 
 func (a *Article) DateStr() string {
 	if a.Date != (datatypes.Date{}) {
-		return time.Time(a.Date).Format("2016-01-02")
+		return time.Time(a.Date).Format("20160102")
 	}
 
 	return ""
