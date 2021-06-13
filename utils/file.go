@@ -47,22 +47,10 @@ func GetPageContentByDateStr(dateStr string) (pageStr string) {
 		_, err := os.Stat(path)
 		if os.IsNotExist(err) {
 			return ""
-			//var articleModel model.Article
-			//resources.Db.Where("date = ?", Str2Date(dateStr)).First(&articleModel)
-			//if articleModel.ID == 0 {
-			//	return ""
-			//}
-			//
-			//htmlBuffer := RenderHtml(Model2Article(articleModel))
-			//
-			//CacheFile(path, htmlBuffer.Bytes())
-			//pageStr = htmlBuffer.String()
 		} else {
 			fileBytes, _ := ioutil.ReadFile(path)
 			pageStr = string(fileBytes)
 		}
-
-		//resources.RC.Set(resources.Ctx, dateStr, pageStr, -1)
 	}
 
 	return
