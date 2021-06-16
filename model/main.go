@@ -2,7 +2,7 @@ package model
 
 import (
 	"log"
-	"penti/resources"
+	"news/resources"
 )
 
 func Init() {

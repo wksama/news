@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"net/http"
-	"penti/model"
-	"penti/resources"
-	"penti/utils"
+	"news/model"
+	"news/resources"
+	"news/utils"
 	"strconv"
 )
 

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"news/model"
+	"news/resources"
 	"os"
-	"penti/model"
-	"penti/resources"
 	"time"
 )
 

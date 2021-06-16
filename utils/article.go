@@ -3,7 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"html/template"
-	"penti/model"
+	"news/model"
 	"time"
 )
 

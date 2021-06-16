@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"news/bin"
+	"news/model"
+	"news/resources"
 	"os"
-	"penti/bin"
-	"penti/model"
-	"penti/resources"
 )
 
 func RenderHtml(ctx *gin.Context) {

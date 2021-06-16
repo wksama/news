@@ -9,7 +9,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
-	"penti/model"
+	"news/model"
 	"regexp"
 	"strings"
 	"time"

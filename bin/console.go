@@ -6,10 +6,10 @@ import (
 	"github.com/go-redis/redis/v8"
 	"io/ioutil"
 	"log"
-	"penti/model"
-	"penti/resources"
-	"penti/spider"
-	"penti/utils"
+	"news/model"
+	"news/resources"
+	"news/spider"
+	"news/utils"
 	"time"
 )
 
@@ -53,6 +53,7 @@ func FetchFlow(url string) {
 	log.Printf("正在爬取文章：%s", url)
 	articleModel := fetchArticleByUrl(url)
 	log.Printf("文章标题：{%s}", articleModel.FullTitle)
+	insertIntoDb(&articleModel)
 	if articleModel.ID != 0 {
 		log.Println("写入数据库成功")
 		insertIntoRedis(articleModel)
@@ -67,13 +68,14 @@ func FetchFlow(url string) {
 
 func fetchArticleByUrl(url string) model.Article {
 	s := spider.New()
-	articleModel := s.FetchArticle(url)
+	return s.FetchArticle(url)
+}
+
+func insertIntoDb(articleModel *model.Article) {
 	result := resources.Db.Create(&articleModel)
 	if result.Error != nil {
 		log.Printf("Insert into database error: %s", result.Error.Error())
 	}
-
-	return articleModel
 }
 
 func insertIntoRedis(articleModel model.Article) {

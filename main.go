@@ -5,12 +5,12 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	"html/template"
-	"penti/bin"
-	"penti/controller/admin"
-	"penti/controller/index"
-	"penti/model"
-	"penti/resources"
-	"penti/utils"
+	"news/bin"
+	"news/controller/admin"
+	"news/controller/index"
+	"news/model"
+	"news/resources"
+	"news/utils"
 )
 
 func main() {
