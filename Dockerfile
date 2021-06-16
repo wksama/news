@@ -13,4 +13,4 @@ COPY --from=builder /go/src/penti/config/config.yaml.example /config/config.yaml
 COPY --from=builder /go/src/penti/templates /templates
 
 EXPOSE "9999"
-ENTRYPOINT ["/penti"]
+ENTRYPOINT ["/news"]
