@@ -8,7 +8,7 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s -extldflags -static"
 
 FROM scratch
 
-COPY --from=builder /go/src/penti/penti /
+COPY --from=builder /go/src/penti/news /
 COPY --from=builder /go/src/penti/config/config.yaml.example /config/config.yaml
 COPY --from=builder /go/src/penti/templates /templates
 
