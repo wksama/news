@@ -2,7 +2,6 @@ package spider
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/henrylee2cn/mahonia"
 	"gorm.io/datatypes"
@@ -34,8 +33,8 @@ func New() *Spider {
 	return new(Spider)
 }
 
-func (a *Spider) FetchPageList(page int) (urlArr []string) {
-	doc := a.getRequestReader(fmt.Sprintf("http://www.dapenti.com/blog/blog.asp?name=xilei&subjectid=70&page=%d", page))
+func (a *Spider) FetchPageList() (urlArr []string) {
+	doc := a.getRequestReader("http://www.dapenti.com/blog/blog.asp?name=xilei&subjectid=70")
 	if doc == nil {
 		return nil
 	}

@@ -18,10 +18,7 @@ func FetchList() {
 	s := spider.New()
 
 	var urlList []string
-	for i := 1; i < 2; i++ {
-		fmt.Println(fmt.Sprintf("page: %d", i))
-		urlList = append(urlList, s.FetchPageList(i)...)
-	}
+	urlList = append(urlList, s.FetchPageList()...)
 
 	for index, url := range urlList {
 		fmt.Println(fmt.Sprintf("index: %d", index))
@@ -55,20 +52,24 @@ func FetchFlow(url string) {
 	log.Printf("文章标题：{%s}", articleModel.FullTitle)
 	insertIntoDb(&articleModel)
 	if articleModel.ID != 0 {
-		log.Println("写入数据库成功")
-		insertIntoRedis(articleModel)
-		log.Println("写入数Redis成功")
-		CacheTemplate(articleModel)
-		log.Println("缓存模板成功")
+		log.Println(articleModel.FullTitle + "写入数据库成功")
+		CacheFlow(articleModel)
 		go utils.Bark(articleModel.RealTitle, articleModel.DateStr())
 	} else {
-		log.Println("写入数据库失败")
+		log.Println(articleModel.FullTitle + "写入数据库失败")
 	}
 }
 
 func fetchArticleByUrl(url string) model.Article {
 	s := spider.New()
 	return s.FetchArticle(url)
+}
+
+func CacheFlow(articleModel model.Article)  {
+	insertIntoRedis(articleModel)
+	log.Println(articleModel.FullTitle + "写入数Redis成功")
+	CacheTemplate(articleModel)
+	log.Println(articleModel.FullTitle + "缓存模板成功")
 }
 
 func insertIntoDb(articleModel *model.Article) {

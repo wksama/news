@@ -1,5 +1,5 @@
 FROM golang:alpine as builder
-WORKDIR /go/src/penti
+WORKDIR /go/src/news
 RUN go env -w GO111MODULE=on
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 COPY . .
@@ -8,9 +8,9 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s -extldflags -static"
 
 FROM scratch
 
-COPY --from=builder /go/src/penti/news /
-COPY --from=builder /go/src/penti/config/config.yaml.example /config/config.yaml
-COPY --from=builder /go/src/penti/templates /templates
+COPY --from=builder /go/src/news/news /
+COPY --from=builder /go/src/news/config/config.yaml.example /config/config.yaml
+COPY --from=builder /go/src/news/templates /templates
 
 EXPOSE "9999"
 ENTRYPOINT ["/news"]

@@ -11,19 +11,31 @@ import (
 )
 
 func RenderHtml(ctx *gin.Context) {
-	var articleModels []model.Article
-	resources.Db.Find(&articleModels)
-	for _, articleModel := range articleModels {
-		bin.CacheTemplate(articleModel)
-		fmt.Println("success")
+	var page = 1
+	var size = 20
+	for true {
+		var offset = (page - 1) * size
+		var articleModels []model.Article
+		resources.Db.Offset(offset).Limit(size).Order("date DESC").Find(&articleModels)
+		for _, articleModel := range articleModels {
+			bin.CacheFlow(articleModel)
+			fmt.Println(articleModel.FullTitle + ": cache success")
+		}
+		if len(articleModels) < size {
+			break
+		}
+		page++
 	}
+
+
+
 }
 
 func Init(ctx *gin.Context) () {
 	_ = os.RemoveAll("./cache")
 	bin.FetchList()
 	ctx.JSON(http.StatusOK, gin.H{
-		"Success": true,
+		"success": true,
 	})
 }
 
@@ -31,7 +43,7 @@ func FetchLatestArticle(ctx *gin.Context) {
 	bin.FetchLatestArticle()
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"Success": true,
+		"success": true,
 	})
 }
 
