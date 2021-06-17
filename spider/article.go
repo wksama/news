@@ -49,7 +49,7 @@ func (a *Spider) FetchPageList() (urlArr []string) {
 }
 
 func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
-	doc := a.getRequestReader("http://www.dapenti.com/blog/index.asp")
+	doc := a.getRequestReader("https://www.dapenti.com/blog/blog.asp?name=xilei")
 	if doc == nil {
 		return
 	}
