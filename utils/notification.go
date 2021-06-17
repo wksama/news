@@ -6,7 +6,7 @@ import (
 	"net/url"
 )
 
-func FangTang(title, desp string)  {
+func FangTang(title, desp string) {
 	var reqMsg = make(url.Values)
 	reqMsg.Set("text", title)
 	reqMsg.Set("desp", desp)

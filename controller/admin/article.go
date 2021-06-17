@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-func RenderHtml(ctx *gin.Context) {
+func CacheArticle(ctx *gin.Context) {
 	var page = 1
 	var size = 20
 	for true {
@@ -26,14 +26,11 @@ func RenderHtml(ctx *gin.Context) {
 		}
 		page++
 	}
-
-
-
 }
 
-func Init(ctx *gin.Context) () {
+func LatestPage(ctx *gin.Context) {
 	_ = os.RemoveAll("./cache")
-	bin.FetchList()
+	bin.FetchFirstPage()
 	ctx.JSON(http.StatusOK, gin.H{
 		"success": true,
 	})

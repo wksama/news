@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func FetchList() {
+func FetchFirstPage() {
 	fmt.Println("fetching list")
 	s := spider.New()
 
@@ -65,7 +65,7 @@ func fetchArticleByUrl(url string) model.Article {
 	return s.FetchArticle(url)
 }
 
-func CacheFlow(articleModel model.Article)  {
+func CacheFlow(articleModel model.Article) {
 	insertIntoRedis(articleModel)
 	log.Println(articleModel.FullTitle + "写入数Redis成功")
 	CacheTemplate(articleModel)
@@ -91,6 +91,7 @@ func insertIntoRedis(articleModel model.Article) {
 func CacheTemplate(articleModel model.Article) {
 	articleStruct := utils.Model2Article(articleModel)
 	htmlBuffer := utils.RenderHtml(articleStruct)
+	resources.RC.Set(resources.Ctx, articleModel.DateStr(), htmlBuffer.String(), 0)
 	file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
 	_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 }

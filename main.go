@@ -35,10 +35,10 @@ func main() {
 	r.GET("/date/:date", index.Item)
 
 	adminGroup := r.Group("/admin")
-	adminGroup.GET("/render", admin.RenderHtml)
-	adminGroup.GET("/init", admin.Init)
+	adminGroup.GET("/page", admin.LatestPage)
+	adminGroup.GET("/cache", admin.CacheArticle)
 	adminGroup.GET("/latest", admin.FetchLatestArticle)
 	adminGroup.GET("/fetch", admin.FetchArticle)
 
-	r.Run(":9999") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	_ = r.Run(":9999") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
