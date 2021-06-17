@@ -5,6 +5,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	"html/template"
+	"net/http"
 	"news/bin"
 	"news/controller/admin"
 	"news/controller/index"
@@ -39,6 +40,10 @@ func main() {
 	adminGroup.GET("/cache", admin.CacheArticle)
 	adminGroup.GET("/latest", admin.FetchLatestArticle)
 	adminGroup.GET("/fetch", admin.FetchArticle)
+
+	r.NoRoute(func(context *gin.Context) {
+		context.HTML(http.StatusNotFound, "404.gohtml", nil)
+	})
 
 	_ = r.Run(":9999") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"github.com/spf13/viper"
 	"html/template"
 	"io/ioutil"
 	"news/model"
@@ -40,9 +41,8 @@ func GetAbsolutePathByDateStr(dateStr string) string {
 }
 
 func GetPageContentByDateStr(dateStr string) (pageStr string) {
-	cmd := resources.RC.Get(resources.Ctx, dateStr)
-	pageStr = cmd.Val()
-	if pageStr == "" {
+	switch viper.GetString("app.read") {
+	case "file":
 		path := GetAbsolutePathByDateStr(dateStr)
 		_, err := os.Stat(path)
 		if os.IsNotExist(err) {
@@ -51,6 +51,9 @@ func GetPageContentByDateStr(dateStr string) (pageStr string) {
 			fileBytes, _ := ioutil.ReadFile(path)
 			pageStr = string(fileBytes)
 		}
+	case "redis":
+		cmd := resources.RC.Get(resources.Ctx, dateStr)
+		pageStr = cmd.Val()
 	}
 
 	return
