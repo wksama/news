@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+const LIST_SELECTOR = "able.oblog_t_1.ke-zeroborder ul li"
+
 type Spider struct {
 }
 
@@ -34,12 +36,12 @@ func New() *Spider {
 }
 
 func (a *Spider) FetchPageList() (urlArr []string) {
-	doc := a.getRequestReader("http://www.dapenti.com/blog/blog.asp?name=xilei&subjectid=70")
+	doc := a.getRequestReader("http://www.dapenti.com/blog/blog.asp?subjectid=70&name=xilei")
 	if doc == nil {
 		return nil
 	}
 
-	doc.Find(".oblog_t_2 ul li").Each(func(i int, selection *goquery.Selection) {
+	doc.Find(LIST_SELECTOR).Each(func(i int, selection *goquery.Selection) {
 		href, exist := selection.Find("a").Attr("href")
 		if exist {
 			urlArr = append(urlArr, "http://www.dapenti.com/blog/"+href)
@@ -49,12 +51,12 @@ func (a *Spider) FetchPageList() (urlArr []string) {
 }
 
 func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
-	doc := a.getRequestReader("https://www.dapenti.com/blog/blog.asp?name=xilei")
+	doc := a.getRequestReader("http://www.dapenti.com/blog/blog.asp?subjectid=70&name=xilei")
 	if doc == nil {
 		return
 	}
 
-	aNode := doc.Find("#right .title_down").Eq(1).Find("ul li").First().Find("a")
+	aNode := doc.Find(LIST_SELECTOR).First().Find("a")
 
 	href, exist := aNode.Attr("href")
 	if exist {
