@@ -54,6 +54,12 @@ func GetPageContentByDateStr(dateStr string) (pageStr string) {
 	case "redis":
 		cmd := resources.RC.Get(resources.Ctx, dateStr)
 		pageStr = cmd.Val()
+	case "render":
+		var articleModel model.Article
+		resources.Db.Where("date = ?", dateStr).First(&articleModel)
+		article := Model2Article(articleModel)
+		pageBuffer := RenderHtml(article)
+		pageStr = pageBuffer.String()
 	}
 
 	return
@@ -68,9 +74,4 @@ func RenderHtml(data Article) *bytes.Buffer {
 	}
 
 	return buf
-}
-
-func CacheFile(path string, content []byte) bool {
-	err := ioutil.WriteFile(path, content, 0777)
-	return err == nil
 }

@@ -7,23 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <!-- 引入 WeUI CDN 链接 -->
     <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
-    <!-- Matomo -->
-    <script type="text/javascript">
-        var _paq = window._paq = window._paq || [];
-        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function () {
-            var u = "//matomo.gomain.run/";
-            _paq.push(['setTrackerUrl', u + 'matomo.php']);
-            _paq.push(['setSiteId', '1']);
-            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-            g.type = 'text/javascript';
-            g.async = true;
-            g.src = u + 'matomo.js';
-            s.parentNode.insertBefore(g, s);
-        })();
-    </script>
+
     <!-- End Matomo Code -->
     <style>
         .page__bd {
@@ -38,16 +22,124 @@
     </style>
 </head>
 <body>
+
 <div class="page__bd">
-    {{range .}}
-        <a class="weui-cell  weui-cell_access" href="/date/{{.Score|float64ToString}}">
-            <div class="weui-cell__bd">
-                <p>{{.Member}}</p>
+    <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
+    <div class="weui-search-bar" id="searchBar">
+        <div class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInput" name="q" placeholder="搜索"
+                       required/>
+                <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
             </div>
-            <div class="weui-cell__ft">
+            <label class="weui-search-bar__label" id="searchText">
+                <i class="weui-icon-search"></i>
+                <span>搜索</span>
+            </label>
+        </div>
+        <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+    </div>
+    <div class="weui-cells searchbar-result" style="display: none;" id="searchResult">
+        <div class="weui-cell weui-cell_active weui-cell_access">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p class="search-btn google">Search via Google</p>
             </div>
-        </a>
-    {{end}}
+        </div>
+        <div class="weui-cell weui-cell_active weui-cell_access">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p class="search-btn baidu">Search via Baidu</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="articleList">
+        {{range .}}
+            <a class="weui-cell  weui-cell_access" href="/date/{{.Score|float64ToString}}">
+                <div class="weui-cell__bd">
+                    <p>{{.Member}}</p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+        {{end}}
+    </div>
 </div>
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        var $searchBar = $('#searchBar'),
+            $searchResult = $('#searchResult'),
+            $searchText = $('#searchText'),
+            $searchInput = $('#searchInput'),
+            $searchClear = $('#searchClear'),
+            $searchCancel = $('#searchCancel');
+        hideSearchResult()
+
+        function hideSearchResult() {
+            $searchResult.hide();
+            $searchInput.val('');
+        }
+
+        function cancelSearch() {
+            hideSearchResult();
+            $searchBar.removeClass('weui-search-bar_focusing');
+            $searchText.show();
+        }
+
+        $searchText.on('click', function () {
+            $searchBar.addClass('weui-search-bar_focusing');
+            $searchInput.focus();
+        });
+        $searchInput
+            .on('blur', function () {
+                if (!this.value.length) cancelSearch();
+            })
+            .on('input', function () {
+                if (this.value.length) {
+                    $searchResult.show();
+                } else {
+                    $searchResult.hide();
+                }
+            })
+        ;
+        $searchClear.on('click', function () {
+            hideSearchResult();
+            $searchInput.focus();
+        });
+        $searchCancel.on('click', function () {
+            cancelSearch();
+            $searchInput.blur();
+        });
+
+        $('.search-btn').on('click', function (e) {
+            let keyword = $('#searchInput').val();
+            if ($(e.target).hasClass('baidu')) {
+                window.open("https://www.baidu.com/s?wd=site:news.gomain.run " + keyword);
+            } else {
+                window.open("https://www.google.com.hk/search?q=site:news.gomain.run " + keyword);
+            }
+        })
+    });
+</script>
+
+<!-- Matomo -->
+<script type="text/javascript">
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+        var u = "//matomo.gomain.run/";
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.src = u + 'matomo.js';
+        s.parentNode.insertBefore(g, s);
+    })();
+</script>
