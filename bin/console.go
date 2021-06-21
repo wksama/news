@@ -40,15 +40,17 @@ func FetchLatestArticle() {
 		s := spider.New()
 		url, articleDateStr := s.FetchLatestArticleUrl()
 		if articleDateStr == dateStr {
-			FetchFlow(url)
+			articleModel := FetchFlow(url)
+			dateStr := articleModel.DateStr()
+			resources.RC.Set(resources.Ctx, "latest", dateStr, 0)
 		}
 	}
 	color.Yellow("======处理完成：" + dateStr + "======")
 }
 
-func FetchFlow(url string) {
+func FetchFlow(url string) (articleModel model.Article) {
 	log.Printf("正在爬取文章：%s", url)
-	articleModel := fetchArticleByUrl(url)
+	articleModel = fetchArticleByUrl(url)
 	log.Printf("文章标题：{%s}", articleModel.FullTitle)
 	insertIntoDb(&articleModel)
 	if articleModel.ID != 0 {
@@ -58,6 +60,8 @@ func FetchFlow(url string) {
 	} else {
 		log.Println(articleModel.FullTitle + "写入数据库失败")
 	}
+
+	return
 }
 
 func fetchArticleByUrl(url string) model.Article {
@@ -80,8 +84,6 @@ func insertIntoDb(articleModel *model.Article) {
 }
 
 func insertIntoRedis(articleModel model.Article) {
-	dateStr := articleModel.DateStr()
-	resources.RC.Set(resources.Ctx, "latest", dateStr, 0)
 	resources.RC.ZAdd(resources.Ctx, "articleList", &redis.Z{
 		Score:  utils.DateToFloat64(articleModel.Date),
 		Member: articleModel.FullTitle,

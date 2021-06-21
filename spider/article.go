@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const LIST_SELECTOR = "able.oblog_t_1.ke-zeroborder ul li"
+const LIST_SELECTOR = "table.oblog_t_1.ke-zeroborder ul li"
 
 type Spider struct {
 }
