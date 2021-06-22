@@ -28,10 +28,6 @@ func GetSaveName(article model.Article) string {
 	return fmt.Sprintf("%s.html", articleDate)
 }
 
-func GetAbsolutePathByArticle(article model.Article) string {
-	return fmt.Sprintf("%s/%s", GetSaveDir(article), GetSaveName(article))
-}
-
 func GetAbsolutePathByDateStr(dateStr string) string {
 	date, _ := time.Parse("20060102", dateStr)
 	dir := fmt.Sprintf("./cache/html/%d/%d/%d", date.Year(), date.Month(), date.Day())
