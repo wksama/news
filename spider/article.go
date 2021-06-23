@@ -7,6 +7,7 @@ import (
 	"gorm.io/datatypes"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"news/model"
 	"regexp"
@@ -76,6 +77,7 @@ func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
 
 func (a Spider) FetchArticle(url string) (article model.Article) {
 	doc := a.getRequestReader(url)
+	log.Println("获取文章doc成功")
 
 	if doc == nil {
 		return model.Article{}
@@ -101,6 +103,7 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 	doc.Find("table.ke-zeroborder p").EachWithBreak(func(i int, selection *goquery.Selection) bool {
 		reg := regexp.MustCompile(`【\d+】`)
 		titleText := reg.FindString(strings.TrimSpace(selection.Text()))
+		log.Println("文章标题： ", titleText)
 		if len(titleText) > 0 {
 			begin = true
 			paragraph++
