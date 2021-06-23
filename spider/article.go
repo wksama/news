@@ -16,6 +16,8 @@ import (
 
 const LIST_SELECTOR = "table.oblog_t_1.ke-zeroborder ul li"
 
+var spiderIns *Spider
+
 type Spider struct {
 }
 
@@ -32,7 +34,10 @@ type Body struct {
 var client = http.DefaultClient
 
 func New() *Spider {
-	return new(Spider)
+	if spiderIns == nil {
+		spiderIns = new(Spider)
+	}
+	return spiderIns
 }
 
 func (a *Spider) FetchPageList() (urlArr []string) {
