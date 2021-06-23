@@ -4,7 +4,7 @@ RUN go env -w GO111MODULE=on
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 COPY . .
 RUN go mod tidy
-RUN CGO_ENABLED=0 go build -ldflags="-w -s -extldflags -static"
+RUN CGO_ENABLED=0 GOOS=linux go build .
 
 FROM scratch
 
