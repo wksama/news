@@ -151,6 +151,7 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 
 func (a Spider) getRequestReader(url string) *goquery.Document {
 	resp, err := client.Get(url)
+	log.Println("Get 请求完成")
 	if err != nil {
 		return nil
 	}
@@ -160,6 +161,7 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 	}
 	enc := mahonia.NewDecoder("gb2312")
 	body := enc.NewReader(resp.Body)
+	log.Println("文章内容转码成功")
 
 	bodyBytes, err := ioutil.ReadAll(body)
 	if err != nil {
@@ -169,6 +171,7 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 	pageStr := string(bodyBytes)
 	reg := regexp.MustCompile(`<hr>广告.*<hr><br>`)
 	adStr := reg.FindString(pageStr)
+	log.Println("去除广告标签")
 
 	pureStr := strings.ReplaceAll(pageStr, adStr, "")
 
