@@ -36,7 +36,9 @@ func FetchLatestArticle() {
 	if err != nil {
 		log.Fatalln("Redis查询错误")
 	}
+	log.Println("redis查询完成")
 	if latest != dateStr {
+		log.Println("正在爬取最新数据")
 		s := spider.New()
 		url, articleDateStr := s.FetchLatestArticleUrl()
 		if articleDateStr == dateStr {
@@ -49,7 +51,7 @@ func FetchLatestArticle() {
 }
 
 func FetchFlow(url string) (articleModel model.Article) {
-	log.Printf("正在爬取文章：%s", url)
+	log.Printf("666:q正在爬取文章：%s", url)
 	articleModel = fetchArticleByUrl(url)
 	log.Printf("文章标题：{%s}", articleModel.FullTitle)
 	insertIntoDb(&articleModel)
