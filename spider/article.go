@@ -74,6 +74,7 @@ func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
 		flysnowRegexp := regexp.MustCompile(`\d+`)
 		dateStr = flysnowRegexp.FindString(title)
 	}
+	log.Println("爬取首页成功")
 
 	return
 }

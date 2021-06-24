@@ -42,8 +42,11 @@ func FetchLatestArticle() {
 		s := spider.New()
 		url, articleDateStr := s.FetchLatestArticleUrl()
 		if articleDateStr == dateStr {
+			log.Println("成功获取到最新文章链接")
 			articleModel := FetchFlow(url)
+			log.Println("成功获取到最新文章内容")
 			dateStr := articleModel.DateStr()
+			log.Println("更新最新文章日期")
 			resources.RC.Set(resources.Ctx, "latest", dateStr, 0)
 		}
 	}
