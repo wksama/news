@@ -168,6 +168,7 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 		log.Println("读取body失败")
 		return nil
 	}
+	log.Println("读取body成功")
 	pageStr := string(bodyBytes)
 	reg := regexp.MustCompile(`<hr>广告.*<hr><br>`)
 	adStr := reg.FindString(pageStr)
