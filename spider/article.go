@@ -1,12 +1,13 @@
 package spider
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/henrylee2cn/mahonia"
 	"gorm.io/datatypes"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"news/model"
@@ -163,13 +164,15 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 	body := enc.NewReader(resp.Body)
 	log.Println("文章内容转码成功")
 
-	bodyBytes, err := ioutil.ReadAll(body)
+	var bodyBytes bytes.Buffer
+	_, err = io.Copy(&bodyBytes, body)
+	//bodyBytes, err := ioutil.ReadAll(body)
 	if err != nil {
 		log.Println("读取body失败")
 		return nil
 	}
 	log.Println("读取body成功")
-	pageStr := string(bodyBytes)
+	pageStr := bodyBytes.String()
 	reg := regexp.MustCompile(`<hr>广告.*<hr><br>`)
 	adStr := reg.FindString(pageStr)
 	log.Println("去除广告标签")
