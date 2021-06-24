@@ -64,15 +64,18 @@ func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
 	if doc == nil {
 		return
 	}
+	log.Println("请求成功")
 
 	aNode := doc.Find(LIST_SELECTOR).First().Find("a")
 
 	href, exist := aNode.Attr("href")
 	if exist {
+		log.Println("拼接最新文章链接")
 		url = "http://www.dapenti.com/blog/" + href
 		title := aNode.Text()
 		flysnowRegexp := regexp.MustCompile(`\d+`)
 		dateStr = flysnowRegexp.FindString(title)
+		log.Println("获取文章日期成功")
 	}
 	log.Println("爬取首页成功")
 
