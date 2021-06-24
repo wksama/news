@@ -38,6 +38,7 @@ func New() *Spider {
 	if spiderCli == nil {
 		log.Println("实例化spider")
 		spiderCli = new(Spider)
+		log.Println("实例化spider成功")
 	}
 	return spiderCli
 }
@@ -58,6 +59,7 @@ func (a *Spider) FetchPageList() (urlArr []string) {
 }
 
 func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
+	log.Println("爬取首页")
 	doc := a.getRequestReader("http://www.dapenti.com/blog/blog.asp?subjectid=70&name=xilei")
 	if doc == nil {
 		return
@@ -155,7 +157,11 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 	enc := mahonia.NewDecoder("gb2312")
 	body := enc.NewReader(resp.Body)
 
-	bodyBytes, _ := ioutil.ReadAll(body)
+	bodyBytes, err := ioutil.ReadAll(body)
+	if err != nil {
+		log.Println("读取body失败")
+		return nil
+	}
 	pageStr := string(bodyBytes)
 	reg := regexp.MustCompile(`<hr>广告.*<hr><br>`)
 	adStr := reg.FindString(pageStr)
