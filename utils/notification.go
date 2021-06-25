@@ -2,6 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"github.com/fatih/color"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -14,5 +16,10 @@ func FangTang(title, desp string) {
 }
 
 func Bark(title, date string) {
-	_, _ = http.DefaultClient.Get(fmt.Sprintf("https://api.day.app/i5DgrmdG5navWxCvgKT2Hc/%s/%s?sound=suspense&url=https://news.gomain.run/date/%s", date, title, date))
+	barkUrl := fmt.Sprintf("https://api.day.app/i5DgrmdG5navWxCvgKT2Hc/%s/%s?sound=suspense&url=https://news.gomain.run/date/%s", date, title, date)
+	log.Println(barkUrl)
+	_, err := http.DefaultClient.Get(barkUrl)
+	if err != nil {
+		color.Red("Bark失败" + err.Error())
+	}
 }

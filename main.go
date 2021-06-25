@@ -1,20 +1,39 @@
 package main
 
 import (
+	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	"html/template"
+	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"news/bin"
 	"news/controller/admin"
 	"news/controller/index"
 	"news/model"
 	"news/resources"
 	"news/utils"
+	"os"
+	"time"
 )
 
 func main() {
+	go func() {
+		color.Red("Open debug server")
+		log.Println(http.ListenAndServe(":9998", nil))
+	}()
+
+	// manually set time zone
+	if tz := os.Getenv("TZ"); tz != "" {
+		var err error
+		time.Local, err = time.LoadLocation(tz)
+		if err != nil {
+			log.Printf("error loading location '%s': %v\n", tz, err)
+		}
+	}
+
 	c := cron.New()
 	_, _ = c.AddFunc("0 14-18 * * *", bin.FetchLatestArticle)
 	c.Start()

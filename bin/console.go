@@ -59,7 +59,11 @@ func FetchFlow(url string) (articleModel model.Article) {
 	log.Printf("文章标题：{%s}", articleModel.FullTitle)
 	insertIntoDb(&articleModel)
 	if articleModel.ID != 0 {
+		color.Yellow("执行CacheFlow")
 		CacheFlow(articleModel)
+		color.Yellow("执行CacheFlow完成")
+
+		color.Yellow("Bark通知")
 		go utils.Bark(articleModel.RealTitle, articleModel.DateStr())
 	} else {
 		log.Println(articleModel.FullTitle + "写入数据库失败")

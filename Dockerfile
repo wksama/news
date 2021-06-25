@@ -11,8 +11,9 @@ FROM scratch
 COPY --from=builder /go/src/news/news /
 COPY --from=builder /go/src/news/config/config.yaml.example /config/config.yaml
 COPY --from=builder /go/src/news/templates /templates
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /
 ENV TZ=Asia/Shanghai
+ENV ZONEINFO=/zoneinfo.zip
 
 EXPOSE "9999"
 ENTRYPOINT ["/news"]
