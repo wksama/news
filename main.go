@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
@@ -22,7 +23,11 @@ import (
 func main() {
 	go func() {
 		color.Red("Open debug server")
-		log.Println(http.ListenAndServe(":9998", nil))
+		err := http.ListenAndServe(":9998", nil)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
 	}()
 
 	// manually set time zone
