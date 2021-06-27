@@ -2,6 +2,7 @@ FROM golang:alpine as builder
 WORKDIR /go/src/news
 RUN go env -w GO111MODULE=on
 RUN go env -w GOPROXY=https://goproxy.cn,direct
+RUN apk add build-base
 COPY . .
 RUN go mod tidy
 RUN CGO_ENABLED=1 GOOS=linux go build .
