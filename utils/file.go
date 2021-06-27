@@ -3,12 +3,18 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/spf13/viper"
+	"github.com/tdewolff/minify/v2"
+	"github.com/tdewolff/minify/v2/css"
+	"github.com/tdewolff/minify/v2/html"
+	"github.com/tdewolff/minify/v2/js"
 	"html/template"
 	"io/ioutil"
 	"news/model"
 	"news/resources"
 	"os"
+	"regexp"
 	"time"
 )
 
@@ -52,7 +58,7 @@ func GetPageContentByDateStr(dateStr string) (pageStr string) {
 		pageStr = cmd.Val()
 	case "render":
 		var articleModel model.Article
-		resources.Db.Where("date = ?", dateStr).First(&articleModel)
+		resources.Db.Where("date = ?", Str2Date(dateStr)).First(&articleModel)
 		article := Model2Article(articleModel)
 		pageBuffer := RenderHtml(article)
 		pageStr = pageBuffer.String()
@@ -67,7 +73,19 @@ func RenderHtml(data Article) *bytes.Buffer {
 	err := tpl.Execute(buf, data)
 	if err != nil {
 		fmt.Println(err.Error())
+		return nil
 	}
 
-	return buf
+	m := minify.New()
+	m.AddFunc("text/html", html.Minify)
+	m.AddFunc("text/css", css.Minify)
+	m.AddFuncRegexp(regexp.MustCompile("^(application|text)/(x-)?(java|ecma)script$"), js.Minify)
+	var minifiedBuffer = new(bytes.Buffer)
+	err = m.Minify("text/html", minifiedBuffer, buf)
+	if err != nil {
+		color.Red("压缩HTML失败： ", err.Error())
+		return nil
+	}
+
+	return minifiedBuffer
 }

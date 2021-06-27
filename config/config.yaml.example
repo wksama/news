@@ -1,11 +1,13 @@
 app:
   debug: true
+  read: 'render'
+  database: 'sqlite3'
 
 mysql:
-  host: '127.0.0.1'
-  port: '3306'
-  user: 'root'
-  password: 'root'
+  dsn: 'root:root@tcp(127.0.0.1:3306)/news?charset=utf8mb4&parseTime=True&loc=Local'
+
+sqlite3:
+  dsn: "./data/news.db"
 
 redis:
   host: '127.0.0.1'

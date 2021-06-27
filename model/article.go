@@ -9,12 +9,10 @@ import (
 type Article struct {
 	gorm.Model
 	ID         uint           `gorm:"primarykey" json:"id"`
-	CreatedAt  time.Time      `json:"created_at"`
-	UpdatedAt  time.Time      `json:"updated_at"`
 	FullTitle  string         `json:"full_title"`
 	RealTitle  string         `json:"real_title"`
-	Url        string         `gorm:"index:,unique" json:"url"`
-	Date       datatypes.Date `gorm:"index:,unique,sort:desc,type: date" json:"date"`
+	Url        string         `gorm:"index:,unique;not null" json:"url"`
+	Date       datatypes.Date `gorm:"index:,unique;not null" json:"date"`
 	Paragraphs datatypes.JSON `json:"paragraphs"`
 }
 

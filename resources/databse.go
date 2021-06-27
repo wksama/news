@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
@@ -12,14 +13,20 @@ import (
 var Db *gorm.DB
 
 func databaseInit() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", viper.Get("mysql.user"), viper.GetString("mysql.password"), viper.Get("mysql.host"), viper.Get("mysql.port"), viper.Get("mysql.database"))
 	dbConfig := &gorm.Config{}
 	if !viper.GetBool("app.debug") {
 		dbConfig.Logger = logger.Default.LogMode(logger.Silent)
 	}
+	database := viper.GetString("app.database")
+	dsn := viper.GetString(fmt.Sprintf("%s.dsn", database))
 	var err error
-	Db, err = gorm.Open(mysql.Open(dsn), dbConfig)
+	switch database {
+	case "mysql":
+		Db, err = gorm.Open(mysql.Open(dsn), dbConfig)
+	case "sqlite3":
+		Db, err = gorm.Open(sqlite.Open(dsn), dbConfig)
+	}
 	if err != nil {
-		log.Fatalln("Failed to connect to database!")
+		log.Fatalln("Failed to connect to database: ", err.Error())
 	}
 }

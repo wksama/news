@@ -61,13 +61,13 @@ func (a *Spider) FetchPageList() (urlArr []string) {
 
 func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
 	log.Println("爬取首页")
-	doc := a.getRequestReader("http://www.dapenti.com/blog/blog.asp?subjectid=70&name=xilei")
+	doc := a.getRequestReader("http://www.dapenti.com/blog/index.asp")
 	if doc == nil {
 		return
 	}
 	log.Println("请求成功")
 
-	aNode := doc.Find(LIST_SELECTOR).First().Find("a")
+	aNode := doc.Find(".box3 .title_down").Last().Find("li").First().Find("a")
 
 	href, exist := aNode.Attr("href")
 	if exist {

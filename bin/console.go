@@ -34,14 +34,14 @@ func FetchLatestArticle() {
 	fmt.Println("Date: " + dateStr)
 	latest, err := resources.RC.Get(resources.Ctx, "latest").Result()
 	if err != nil {
-		log.Fatalln("Redis查询错误")
+		log.Println("Redis查询错误", err.Error())
 	}
 	log.Println("redis查询完成")
 	if latest != dateStr {
 		log.Println("正在爬取最新数据")
 		s := spider.New()
 		url, articleDateStr := s.FetchLatestArticleUrl()
-		if articleDateStr == dateStr {
+		if articleDateStr != "" {
 			log.Println("成功获取到最新文章链接")
 			articleModel := FetchFlow(url)
 			log.Println("成功获取到最新文章内容")
@@ -54,19 +54,23 @@ func FetchLatestArticle() {
 }
 
 func FetchFlow(url string) (articleModel model.Article) {
-	log.Printf("666:q正在爬取文章：%s", url)
+	log.Printf("正在爬取文章：%s", url)
 	articleModel = fetchArticleByUrl(url)
-	log.Printf("文章标题：{%s}", articleModel.FullTitle)
-	insertIntoDb(&articleModel)
-	if articleModel.ID != 0 {
-		color.Yellow("执行CacheFlow")
-		CacheFlow(articleModel)
-		color.Yellow("执行CacheFlow完成")
+	if articleModel.FullTitle != "" {
+		log.Printf("文章标题：{%s}", articleModel.FullTitle)
+		insertIntoDb(&articleModel)
+		if articleModel.ID != 0 {
+			color.Yellow("执行CacheFlow")
+			CacheFlow(articleModel)
+			color.Yellow("执行CacheFlow完成")
 
-		color.Yellow("Bark通知")
-		go utils.Bark(articleModel.RealTitle, articleModel.DateStr())
+			color.Yellow("Bark通知")
+			go utils.Bark(articleModel.RealTitle, articleModel.DateStr())
+		} else {
+			log.Println(articleModel.FullTitle + "写入数据库失败")
+		}
 	} else {
-		log.Println(articleModel.FullTitle + "写入数据库失败")
+		color.Red("文章不存在")
 	}
 
 	return
