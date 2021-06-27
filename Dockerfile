@@ -1,5 +1,6 @@
 FROM golang:alpine as builder
 WORKDIR /go/src/news
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.tencent.com/g' /etc/apk/repositories
 RUN go env -w GO111MODULE=on
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 RUN apk add build-base
