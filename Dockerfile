@@ -18,5 +18,6 @@ RUN CGO_ENABLED=1 GOOS=linux go build .
 #ENV TZ=Asia/Shanghai
 #ENV ZONEINFO=/zoneinfo.zip
 
-EXPOSE "9999"
-ENTRYPOINT ["/news"]
+#ENTRYPOINT ["/news"]
+ENTRYPOINT ["/go/src/news/news"]
+
