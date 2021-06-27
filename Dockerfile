@@ -7,6 +7,7 @@ RUN go env -w GO111MODULE=on
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 COPY . .
 RUN go mod tidy
+RUN go-wrapper install -ldflags "-linkmode external -extldflags -static"
 RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' .
 
 FROM scratch
