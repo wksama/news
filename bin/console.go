@@ -20,8 +20,7 @@ func FetchFirstPage() {
 	var urlList []string
 	urlList = append(urlList, s.FetchPageList()...)
 
-	for index, url := range urlList {
-		fmt.Println(fmt.Sprintf("index: %d", index))
+	for _, url := range urlList {
 		FetchFlow(url)
 		fmt.Println("sleeping ...")
 		time.Sleep(2 * time.Second)
@@ -30,27 +29,19 @@ func FetchFirstPage() {
 
 func FetchLatestArticle() {
 	dateStr := time.Now().Format("20060102")
-	color.Yellow("======正在处理：" + dateStr + "======")
-	fmt.Println("Date: " + dateStr)
 	latest, err := resources.RC.Get(resources.Ctx, "latest").Result()
 	if err != nil {
 		log.Println("Redis查询错误", err.Error())
 	}
-	log.Println("redis查询完成")
 	if latest != dateStr {
-		log.Println("正在爬取最新数据")
 		s := spider.New()
 		url, articleDateStr := s.FetchLatestArticleUrl()
 		if articleDateStr != "" {
-			log.Println("成功获取到最新文章链接")
 			articleModel := FetchFlow(url)
-			log.Println("成功获取到最新文章内容")
 			dateStr := articleModel.DateStr()
-			log.Println("更新最新文章日期")
 			resources.RC.Set(resources.Ctx, "latest", dateStr, 0)
 		}
 	}
-	color.Yellow("======处理完成：" + dateStr + "======")
 }
 
 func FetchFlow(url string) (articleModel model.Article) {
@@ -60,11 +51,8 @@ func FetchFlow(url string) (articleModel model.Article) {
 		log.Printf("文章标题：{%s}", articleModel.FullTitle)
 		insertIntoDb(&articleModel)
 		if articleModel.ID != 0 {
-			color.Yellow("执行CacheFlow")
 			CacheFlow(articleModel)
-			color.Yellow("执行CacheFlow完成")
 
-			color.Yellow("Bark通知")
 			go utils.Bark(articleModel.RealTitle, articleModel.DateStr())
 		} else {
 			log.Println(articleModel.FullTitle + "写入数据库失败")
@@ -110,14 +98,10 @@ func CacheTemplate(articleModel model.Article) {
 	log.Println("正在渲染模板")
 	articleStruct := utils.Model2Article(articleModel)
 	htmlBuffer := utils.RenderHtml(articleStruct)
-	log.Println("渲染模板完成")
 
-	log.Println("正在将渲染结果写如Redis")
 	resources.RC.Set(resources.Ctx, articleModel.DateStr(), htmlBuffer.String(), 0)
 	file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
-	log.Println("渲染结果写如Redis完成")
 
-	log.Println("正在将渲染结果缓存至静态文件")
 	_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)
 	log.Println("渲染结果缓存至静态文件完成")
 }
