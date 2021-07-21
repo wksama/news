@@ -3,7 +3,7 @@ cache
 data
 tmp
 nohup.out
-penti.iml
+news.iml
 .air.toml
 config/config.yaml
 news.log

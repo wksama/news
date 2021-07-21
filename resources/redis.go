@@ -12,13 +12,17 @@ var RC *redis.Client
 var Ctx = context.Background()
 
 func redisInit() {
+	log.Println(viper.GetString("redis.dsn"))
 	RC = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", viper.Get("redis.host"), viper.Get("redis.port")),
+		Addr:     viper.GetString("redis.dsn"),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	pong, _ := RC.Ping(Ctx).Result()
+	pong, err := RC.Ping(Ctx).Result()
 	if pong != "PONG" {
+		if err != nil {
+			fmt.Println(err)
+		}
 		log.Fatalln("Failed to connect to redis server")
 	}
 }

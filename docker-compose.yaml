@@ -1,9 +1,15 @@
 version: "3.1"
 
 services:
-  penti:
-    build: .
-    container_name: "news"
+  news:
+    build:
+      context: .
+    container_name: news
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - ./data:/data
+    restart: always
     tty: true
     ports:
       - 9999:9999

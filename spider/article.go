@@ -111,7 +111,6 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 	doc.Find("table.ke-zeroborder p").EachWithBreak(func(i int, selection *goquery.Selection) bool {
 		reg := regexp.MustCompile(`【\d+】`)
 		titleText := reg.FindString(strings.TrimSpace(selection.Text()))
-		log.Println("文章标题： ", titleText)
 		if len(titleText) > 0 {
 			begin = true
 			paragraph++
@@ -152,7 +151,6 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 
 func (a Spider) getRequestReader(url string) *goquery.Document {
 	resp, err := client.Get(url)
-	log.Println("Get 请求完成")
 	if err != nil {
 		return nil
 	}
@@ -162,7 +160,6 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 	}
 	enc := mahonia.NewDecoder("gb2312")
 	body := enc.NewReader(resp.Body)
-	log.Println("文章内容转码成功")
 
 	var bodyBytes bytes.Buffer
 	_, err = io.Copy(&bodyBytes, body)
@@ -171,11 +168,9 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 		log.Println("读取body失败")
 		return nil
 	}
-	log.Println("读取body成功")
 	pageStr := bodyBytes.String()
 	reg := regexp.MustCompile(`<hr>广告.*<hr><br>`)
 	adStr := reg.FindString(pageStr)
-	log.Println("去除广告标签")
 
 	pureStr := strings.ReplaceAll(pageStr, adStr, "")
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
@@ -36,6 +37,8 @@ func main() {
 	_, _ = c.AddFunc("0 14-18 * * *", bin.FetchLatestArticle)
 	c.Start()
 	resources.Init()
+	fmt.Println("hello")
+
 	model.Init()
 
 	if !viper.GetBool("app.debug") {

@@ -1,0 +1,8 @@
+cache
+config/config.yaml
+tmp
+.idea
+news.log
+.air.toml
+news.iml
+Dockerfile
