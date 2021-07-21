@@ -6,7 +6,7 @@ RUN go env -w GO111MODULE=on
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 COPY . .
 RUN go mod tidy
-RUN CGO_ENABLED=1 GOOS=linux go build
+RUN CGO_ENABLED=1 GOOS=linux go build .
 RUN cp config/config.yaml.example config/config.yaml
 
 FROM scratch
