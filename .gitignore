@@ -2,6 +2,7 @@
 cache
 data
 tmp
+news
 nohup.out
 news.iml
 .air.toml
