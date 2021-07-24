@@ -1,6 +1,7 @@
 package bin
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/go-redis/redis/v8"
@@ -49,7 +50,7 @@ func FetchFlow(url string) (articleModel model.Article) {
 	articleModel = fetchArticleByUrl(url)
 	if articleModel.FullTitle != "" {
 		log.Printf("文章标题：{%s}", articleModel.FullTitle)
-		insertIntoDb(&articleModel)
+		InsertIntoDb(&articleModel)
 		if articleModel.ID != 0 {
 			CacheFlow(articleModel)
 
@@ -76,7 +77,7 @@ func CacheFlow(articleModel model.Article) {
 	log.Println("执行缓存流程完成")
 }
 
-func insertIntoDb(articleModel *model.Article) {
+func InsertIntoDb(articleModel *model.Article) {
 	log.Println("正在写入数据库")
 	result := resources.Db.Create(&articleModel)
 	if result.Error != nil {
@@ -91,6 +92,8 @@ func insertIntoRedis(articleModel model.Article) {
 		Score:  utils.DateToFloat64(articleModel.Date),
 		Member: articleModel.FullTitle,
 	})
+	articleBytes,_ := json.Marshal(articleModel)
+	resources.RC.Set(resources.Ctx, articleModel.DateStr(), string(articleBytes), 0)
 	log.Println("写入Redis完成")
 }
 
@@ -98,8 +101,6 @@ func CacheTemplate(articleModel model.Article) {
 	log.Println("正在渲染模板")
 	articleStruct := utils.Model2Article(articleModel)
 	htmlBuffer := utils.RenderHtml(articleStruct)
-
-	resources.RC.Set(resources.Ctx, articleModel.DateStr(), htmlBuffer.String(), 0)
 	file := fmt.Sprintf("%s/%s", utils.GetSaveDir(articleModel), utils.GetSaveName(articleModel))
 
 	_ = ioutil.WriteFile(file, htmlBuffer.Bytes(), 0777)

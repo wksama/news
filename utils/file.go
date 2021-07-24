@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
@@ -55,7 +56,12 @@ func GetPageContentByDateStr(dateStr string) (pageStr string) {
 		}
 	case "redis":
 		cmd := resources.RC.Get(resources.Ctx, dateStr)
-		pageStr = cmd.Val()
+		articleJson := cmd.Val()
+		var articleModel model.Article
+		_ = json.Unmarshal([]byte(articleJson), &articleModel)
+		article := Model2Article(articleModel)
+		pageBuffer := RenderHtml(article)
+		pageStr = pageBuffer.String()
 	case "render":
 		var articleModel model.Article
 		resources.Db.Where("date = ?", Str2Date(dateStr)).First(&articleModel)

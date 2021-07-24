@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
@@ -37,8 +36,6 @@ func main() {
 	_, _ = c.AddFunc("0 14-18 * * *", bin.FetchLatestArticle)
 	c.Start()
 	resources.Init()
-	fmt.Println("hello")
-
 	model.Init()
 
 	if !viper.GetBool("app.debug") {
@@ -60,6 +57,7 @@ func main() {
 	adminGroup.GET("/cache", admin.CacheArticle)
 	adminGroup.GET("/latest", admin.FetchLatestArticle)
 	adminGroup.GET("/fetch", admin.FetchArticle)
+	//adminGroup.GET("/redis_to_db", admin.Redis2DB)
 
 	r.NoRoute(func(context *gin.Context) {
 		context.HTML(http.StatusNotFound, "404.gohtml", nil)

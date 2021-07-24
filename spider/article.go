@@ -24,8 +24,8 @@ type Spider struct {
 }
 
 type Paragraph struct {
-	Subject string `json:"title"`
-	Bodies  []Body `json:"body"`
+	Title  string `json:"title"`
+	Bodies []Body `json:"body"`
 }
 
 type Body struct {
@@ -115,7 +115,7 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 			begin = true
 			paragraph++
 			paragraphs = append(paragraphs, &Paragraph{
-				Subject: strings.TrimSpace(selection.Text()),
+				Title: strings.TrimSpace(selection.Text()),
 			})
 		} else {
 			if begin == true {
