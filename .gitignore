@@ -5,6 +5,6 @@ news
 nohup.out
 news.iml
 .air.toml
-config/config.yaml
+config.yaml
 news.log
 news.exe

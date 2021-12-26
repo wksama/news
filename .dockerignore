@@ -1,5 +1,5 @@
 cache
-config/config.yaml
+config.yaml
 tmp
 .idea
 news.log
