@@ -13,7 +13,6 @@ func main() {
 
 	r := gin.Default()
 
-	bin.Cache()
 	flag.Parse()
 	runType := flag.Arg(0)
 	switch runType {
