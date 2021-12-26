@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main  # Set a branch to deploy
-  pull_request:
+  schedule:
+    - cron:  '0,30 * * * *'
 
 jobs:
   deploy:
@@ -40,6 +41,8 @@ jobs:
         uses: test-room-7/action-update-file@v1
         with:
           file-path: data/news.db
+          committer-name: wenkechen
+          committer-email: ${{ secrets.COMMITTER_EMAIL }}
           commit-msg: Update database
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
