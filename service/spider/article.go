@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-const LIST_SELECTOR = "table.oblog_t_1.ke-zeroborder ul li"
+const ListSelector = "table.oblog_t_1.ke-zeroborder ul li"
 
 var spiderCli *Spider
 
@@ -44,16 +44,16 @@ func New() *Spider {
 	return spiderCli
 }
 
-func (a *Spider) FetchPageList() (urlArr []string) {
-	doc := a.getRequestReader("http://www.dapenti.com/blog/blog.asp?subjectid=70&name=xilei")
+func (a *Spider) FetchPageList() (urlList []string) {
+	doc := a.getRequestReader("https://www.dapenti.com/blog/blog.asp?subjectid=70&name=xilei")
 	if doc == nil {
 		return nil
 	}
 
-	doc.Find(LIST_SELECTOR).Each(func(i int, selection *goquery.Selection) {
+	doc.Find(ListSelector).Each(func(i int, selection *goquery.Selection) {
 		href, exist := selection.Find("a").Attr("href")
 		if exist {
-			urlArr = append(urlArr, "http://www.dapenti.com/blog/"+href)
+			urlList = append(urlList, "https://www.dapenti.com/blog/"+href)
 		}
 	})
 	return
@@ -61,7 +61,7 @@ func (a *Spider) FetchPageList() (urlArr []string) {
 
 func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
 	log.Println("爬取首页")
-	doc := a.getRequestReader("http://www.dapenti.com/blog/index.asp")
+	doc := a.getRequestReader("https://www.dapenti.com/blog/index.asp")
 	if doc == nil {
 		return
 	}
@@ -72,7 +72,7 @@ func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
 	href, exist := aNode.Attr("href")
 	if exist {
 		log.Println("拼接最新文章链接")
-		url = "http://www.dapenti.com/blog/" + href
+		url = "https://www.dapenti.com/blog/" + href
 		title := aNode.Text()
 		flysnowRegexp := regexp.MustCompile(`\d+`)
 		dateStr = flysnowRegexp.FindString(title)

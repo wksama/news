@@ -9,9 +9,9 @@ import (
 	"html/template"
 	"net/http"
 	"news/bin"
+	"news/boot"
 	"news/model"
-	"news/resources"
-	"news/spider"
+	"news/service/spider"
 	"news/utils"
 	"os"
 	"strings"
@@ -24,7 +24,7 @@ func CacheArticle(ctx *gin.Context) {
 	for true {
 		var offset = (page - 1) * size
 		var articleModels []model.Article
-		resources.Db.Offset(offset).Limit(size).Order("date DESC").Find(&articleModels)
+		boot.Db.Offset(offset).Limit(size).Order("date DESC").Find(&articleModels)
 		for _, articleModel := range articleModels {
 			bin.CacheFlow(articleModel)
 			fmt.Println(articleModel.FullTitle + ": cache success")
@@ -45,15 +45,15 @@ func LatestPage(ctx *gin.Context) {
 }
 
 func Redis2DB(ctx *gin.Context) {
-	res := resources.RC.ZRangeWithScores(ctx, "articleList", 0, 100000)
+	res := boot.RC.ZRangeWithScores(ctx, "articleList", 0, 100000)
 	list := res.Val()
 	for _, item := range list {
 		dateStr := utils.Float64ToString(item.Score)
-		cmd := resources.RC.Get(resources.Ctx, dateStr)
+		cmd := boot.RC.Get(boot.Ctx, dateStr)
 		pageStr := cmd.Val()
-		pageReader,_ := goquery.NewDocumentFromReader(strings.NewReader(pageStr))
+		pageReader, _ := goquery.NewDocumentFromReader(strings.NewReader(pageStr))
 		articleModel := new(model.Article)
-		dateTime,_ := time.Parse("20060102", dateStr)
+		dateTime, _ := time.Parse("20060102", dateStr)
 		articleModel.Date = datatypes.Date(dateTime)
 		articleModel.FullTitle = item.Member.(string)
 
@@ -73,9 +73,9 @@ func Redis2DB(ctx *gin.Context) {
 				var body spider.Body
 				if selection.HasClass("img-div") {
 					body.Type = "img"
-					src := selection.Find("img").AttrOr("src","")
+					src := selection.Find("img").AttrOr("src", "")
 					body.Content = template.HTML(src)
-				}else {
+				} else {
 					body.Type = "text"
 					body.Content = template.HTML(selection.Text())
 				}
@@ -83,7 +83,7 @@ func Redis2DB(ctx *gin.Context) {
 			})
 			paragraphs = append(paragraphs, paragraph)
 		}
-		paragraphsBytes,_ := json.Marshal(paragraphs)
+		paragraphsBytes, _ := json.Marshal(paragraphs)
 		articleModel.Paragraphs = paragraphsBytes
 		bin.InsertIntoDb(articleModel)
 	}
@@ -106,7 +106,7 @@ func FetchArticle(ctx *gin.Context) {
 		})
 		return
 	}
-	bin.FetchFlow(url)
+	bin.FetchFlow(url, nil)
 	ctx.JSON(http.StatusOK, gin.H{
 		"Success": true,
 	})

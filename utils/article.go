@@ -2,8 +2,10 @@ package utils
 
 import (
 	"encoding/json"
+	"github.com/go-redis/redis/v8"
 	"html/template"
 	"news/model"
+	"strconv"
 	"time"
 )
 
@@ -35,5 +37,14 @@ func Model2Article(article model.Article) Article {
 		Url:        article.Url,
 		Date:       dateStr,
 		Paragraphs: articleParagraphs,
+	}
+}
+
+func Model2Z(article model.Article) redis.Z {
+	dateStr := article.DateStr()
+	dateInt, _ := strconv.Atoi(dateStr)
+	return redis.Z{
+		Score:  float64(dateInt),
+		Member: article.FullTitle,
 	}
 }

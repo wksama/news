@@ -63,7 +63,7 @@
 
     <div id="articleList">
         {{range .}}
-            <a class="weui-cell  weui-cell_access" href="/date/{{.Score|float64ToString}}">
+            <a class="weui-cell  weui-cell_access" href="/date/{{printf "%.0f" .Score}}">
                 <div class="weui-cell__bd">
                     <p>{{.Member}}</p>
                 </div>
@@ -132,22 +132,4 @@
             }
         })
     });
-</script>
-
-<!-- Matomo -->
-<script type="text/javascript">
-    var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function () {
-        var u = "//matomo.gomain.run/";
-        _paq.push(['setTrackerUrl', u + 'matomo.php']);
-        _paq.push(['setSiteId', '1']);
-        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-        g.type = 'text/javascript';
-        g.async = true;
-        g.src = u + 'matomo.js';
-        s.parentNode.insertBefore(g, s);
-    })();
 </script>

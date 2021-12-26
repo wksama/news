@@ -1,6 +1,5 @@
 .idea
 cache
-data
 tmp
 news
 nohup.out
@@ -8,3 +7,4 @@ news.iml
 .air.toml
 config/config.yaml
 news.log
+news.exe
