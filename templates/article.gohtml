@@ -7,15 +7,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <!-- 引入 WeUI CDN 链接 -->
     <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-430P4Z0C1Y"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-430P4Z0C1Y');
-    </script>
     <style>
         .page__bd {
             max-width: 750px;
@@ -32,7 +23,7 @@
 
 <div class="page__bd">
     <article class="weui-article">
-        <h1><a href="/">{{.RealTitle}}</a></h1>
+        <h1><a href="{{ home }}">{{.RealTitle}}</a></h1>
         <p class="page__desc">更新日期：{{.Date}}</p>
         <section>
             {{range .Paragraphs}}

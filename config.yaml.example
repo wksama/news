@@ -1,7 +1,9 @@
 app:
-  debug: true
+  debug: false
   cache: 'file'
   database: 'sqlite3'
+  baseUrl: '/news'
+  pages: true
 
 mysql:
   dsn: 'root:root@tcp(127.0.0.1:3306)/news?charset=utf8mb4&parseTime=True&loc=Local'

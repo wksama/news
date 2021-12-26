@@ -7,16 +7,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <!-- 引入 WeUI CDN 链接 -->
     <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-430P4Z0C1Y"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-430P4Z0C1Y');
-    </script>
     <style>
         .page__bd {
             max-width: 750px;
@@ -63,7 +53,8 @@
 
     <div id="articleList">
         {{range .}}
-            <a class="weui-cell  weui-cell_access" href="/date/{{printf "%.0f" .Score}}">
+            {{$dateStr := printf "%.0f" .Score}}
+            <a class="weui-cell  weui-cell_access" href="{{path $dateStr}}">
                 <div class="weui-cell__bd">
                     <p>{{.Member}}</p>
                 </div>
@@ -124,11 +115,12 @@
         });
 
         $('.search-btn').on('click', function (e) {
+            let href = window.location.host
             let keyword = $('#searchInput').val();
             if ($(e.target).hasClass('baidu')) {
-                window.open("https://www.baidu.com/s?wd=site:news.gomain.run " + keyword);
+                window.open("https://www.baidu.com/s?wd=site:"+ href +" "+ keyword);
             } else {
-                window.open("https://www.google.com.hk/search?q=site:news.gomain.run " + keyword);
+                window.open("https://www.google.com.hk/search?q=site:"+ href +" "+ keyword);
             }
         })
     });

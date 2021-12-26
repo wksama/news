@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/go-redis/redis/v8"
+	"github.com/spf13/viper"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
 	"github.com/tdewolff/minify/v2/html"
 	"github.com/tdewolff/minify/v2/js"
 	"html/template"
 	"os"
+	"path/filepath"
 	"regexp"
 	"time"
 )
@@ -35,7 +37,18 @@ func RenderList(data []redis.Z) string {
 }
 
 func RenderHtml(tplPath string, data interface{}) string {
-	tpl, err := template.ParseFiles(tplPath)
+	tpl, err := template.New(filepath.Base(tplPath)).Funcs(template.FuncMap{
+		"path": func(dateStr string) string {
+			if viper.GetBool("app.pages") {
+				return fmt.Sprintf("%s/%s/%s/%s/%s", viper.GetString("app.baseUrl"), dateStr[0:4], dateStr[4:6], dateStr[6:8], dateStr)
+			} else {
+				return fmt.Sprintf("%s/date/%s", viper.GetString("app.baseUrl"), dateStr)
+			}
+		},
+		"home": func() string {
+			return viper.GetString("app.baseUrl")
+		},
+	}).ParseFiles(tplPath)
 	if err != nil {
 		panic(err)
 	}
