@@ -39,7 +39,7 @@ jobs:
       - name: Update database
         uses: test-room-7/action-update-file@v1
         with:
-          file-path: ./data/news.db
+          file-path: data/news.db
           commit-msg: Update database
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
