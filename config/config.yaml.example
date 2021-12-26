@@ -1,6 +1,6 @@
 app:
   debug: true
-  read: 'render'
+  cache: 'file'
   database: 'sqlite3'
 
 mysql:
@@ -10,8 +10,7 @@ sqlite3:
   dsn: "./data/news.db"
 
 redis:
-  host: '127.0.0.1'
-  port: '6379'
+  dsn: ''
 
 log:
   file: './news.log'
