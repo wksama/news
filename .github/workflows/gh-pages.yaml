@@ -5,7 +5,7 @@ on:
     branches:
       - main  # Set a branch to deploy
   schedule:
-    - cron:  '0,30 * * * *'
+    - cron:  '0,30 8-10 * * *'
 
 jobs:
   deploy:
@@ -34,8 +34,8 @@ jobs:
       - name: Build
         run: go build
 
-      - name: Fetch & Cache
-        run: ./news latest && ./news cache
+#      - name: Fetch & Cache
+#        run: ./news latest && ./news cache
 
       - name: Update database
         uses: test-room-7/action-update-file@v1
