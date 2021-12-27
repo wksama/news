@@ -20,7 +20,7 @@ const ArticleTpl = "/templates/article.gohtml"
 const ListTpl = "/templates/list.gohtml"
 
 func GetAbsolutePathByDateStr(dateStr string) string {
-	dir := fmt.Sprintf("%s/cache/%s/%s/%s", GetRootDir(), dateStr[0:4], dateStr[4:6], dateStr[6:8])
+	dir := fmt.Sprintf("%s/cache/%s/%s", GetRootDir(), dateStr[0:4], dateStr[4:6])
 	os.MkdirAll(dir, 0777)
 
 	return fmt.Sprintf("%s/%s", dir, fmt.Sprintf("%s.html", dateStr))
@@ -38,7 +38,7 @@ func RenderHtml(tplPath string, data interface{}) string {
 	tpl, err := template.New(filepath.Base(tplPath)).Funcs(template.FuncMap{
 		"path": func(dateStr string) string {
 			if viper.GetBool("app.pages") {
-				return fmt.Sprintf("%s/%s/%s/%s/%s", viper.GetString("app.baseUrl"), dateStr[0:4], dateStr[4:6], dateStr[6:8], dateStr)
+				return fmt.Sprintf("%s/%s/%s/%s", viper.GetString("app.baseUrl"), dateStr[0:4], dateStr[4:6], dateStr)
 			} else {
 				return fmt.Sprintf("%s/date/%s", viper.GetString("app.baseUrl"), dateStr)
 			}
