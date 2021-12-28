@@ -10,12 +10,12 @@ COPY . .
 RUN go mod tidy
 #RUN CGO_ENABLED=1 GOOS=linux go build
 RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' .
-RUN cp config/config.yaml.example config/config.yaml
+RUN cp config.yaml.example config.yaml
 
 FROM scratch
 
 COPY --from=builder /go/src/news/news /
-COPY --from=builder /go/src/news/config/config.yaml.example /config/config.yaml
+COPY --from=builder /go/src/news/config.yaml.example /config.yaml
 COPY --from=builder /go/src/news/templates /templates
 COPY --from=builder /go/src/news/data /data
 COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /
