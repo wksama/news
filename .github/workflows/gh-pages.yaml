@@ -40,15 +40,15 @@ jobs:
           echo "::set-output name=ERR_MSG::$(./news latest | grep 'Insert into database error')"
 
       - name: Debug
-        run: echo ${{ steps.fetch_latest.outputs.ERR_MSG }}
+        run: echo "${{ steps.fetch_latest.outputs.ERR_MSG }}"
 
       - name: Cache pages
-        if: ${{ steps.fetch_latest.outputs.ERR_MSG }} == ''
+        if: ${{ steps.fetch_latest.outputs.ERR_MSG == '' }}
         run: ./news cache
 
       - name: Update database
+        if: ${{ steps.fetch_latest.outputs.ERR_MSG == '' }}
         uses: test-room-7/action-update-file@v1
-        if: steps.fetch_latest.outputs.ERR_MSG == ''
         with:
           file-path: data/news.db
           committer-name: wenkechen
@@ -57,8 +57,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main' && steps.fetch_latest.outputs.ERR_MSG == ''
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./cache
