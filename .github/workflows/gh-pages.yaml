@@ -40,7 +40,7 @@ jobs:
           echo "::set-output name=ERR_MSG::$(./news latest | grep -c 'error')"
 
       - name: Cache pages
-        if: ${{ steps.fetch_latest.outputs.ERR_MSG == 0 }}
+#        if: ${{ steps.fetch_latest.outputs.ERR_MSG == 0 }}
         run: ./news cache
 
       - name: Update database
