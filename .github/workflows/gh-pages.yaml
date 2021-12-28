@@ -34,11 +34,18 @@ jobs:
       - name: Build
         run: go build
 
-      - name: Fetch & Cache
-        run: ./news latest && ./news cache
+      - name: Fetch latest
+        id: fetch_latest
+        run: |
+          echo "::set-output name=ERR_MSG::$(news latest | grep 'Insert into database error')"
+
+      - name: Cache pages
+        if: steps.fetch_latest.outputs.ERR_MSG == ''
+        run: news cache
 
       - name: Update database
         uses: test-room-7/action-update-file@v1
+        if: steps.fetch_latest.outputs.ERR_MSG == ''
         with:
           file-path: data/news.db
           committer-name: wenkechen
@@ -48,7 +55,7 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && steps.fetch_latest.outputs.ERR_MSG == ''
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./cache
