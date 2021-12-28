@@ -15,4 +15,4 @@ redis:
   dsn: ''
 
 log:
-  file: './news.log'
+  file: ''
