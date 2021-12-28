@@ -39,8 +39,11 @@ jobs:
         run: |
           echo "::set-output name=ERR_MSG::$(./news latest | grep 'Insert into database error')"
 
+      - name: Debug
+        run: echo ${{ steps.fetch_latest.outputs.ERR_MSG }}
+
       - name: Cache pages
-        if: steps.fetch_latest.outputs.ERR_MSG == ''
+        if: ${{ steps.fetch_latest.outputs.ERR_MSG }} == ''
         run: ./news cache
 
       - name: Update database
