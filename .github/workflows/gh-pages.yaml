@@ -37,11 +37,11 @@ jobs:
       - name: Fetch latest
         id: fetch_latest
         run: |
-          echo "::set-output name=ERR_MSG::$(news latest | grep 'Insert into database error')"
+          echo "::set-output name=ERR_MSG::$(./news latest | grep 'Insert into database error')"
 
       - name: Cache pages
         if: steps.fetch_latest.outputs.ERR_MSG == ''
-        run: news cache
+        run: ./news cache
 
       - name: Update database
         uses: test-room-7/action-update-file@v1
