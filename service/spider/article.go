@@ -126,10 +126,9 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 					src, _ := selection.Find("img").Attr("src")
 					body.Type = "img"
 					body.Content = template.HTML(src)
-				} else if len(selection.Text()) > 0 {
+				} else if len(selection.Text()) > 0 && strings.TrimSpace(selection.Text()) != "广告" {
 					if strings.Contains(selection.Text(), "来源：喷嚏网") ||
 						strings.Contains(selection.Text(), "item.taobao") ||
-						strings.TrimSpace(selection.Text()) == "广告" ||
 						strings.Contains(selection.Text(), "本期图卦由") {
 						return false
 					}
