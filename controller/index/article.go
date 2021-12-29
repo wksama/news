@@ -50,7 +50,7 @@ func Item(ctx *gin.Context) {
 
 	pageContent := cacheDriver.Fetch(dateStr)
 	if pageContent == "" {
-		ctx.Status(http.StatusNotFound)
+		ctx.HTML(http.StatusNotFound, "404.gohtml", nil)
 		return
 	}
 

@@ -1,4 +1,4 @@
-package utils
+package tpl
 
 import (
 	"bytes"
@@ -11,6 +11,7 @@ import (
 	"github.com/tdewolff/minify/v2/html"
 	"github.com/tdewolff/minify/v2/js"
 	"html/template"
+	"news/utils"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -18,6 +19,7 @@ import (
 
 const ArticleTpl = "/templates/article.gohtml"
 const ListTpl = "/templates/list.gohtml"
+const NotFoundTpl = "/templates/404.gohtml"
 
 func GetAbsolutePathByDateStr(dateStr string) string {
 	dir := fmt.Sprintf("%s/cache/%s/%s", GetRootDir(), dateStr[0:4], dateStr[4:6])
@@ -26,12 +28,16 @@ func GetAbsolutePathByDateStr(dateStr string) string {
 	return fmt.Sprintf("%s/%s", dir, fmt.Sprintf("%s.html", dateStr))
 }
 
-func RenderArticle(data Article) string {
+func RenderArticle(data utils.Article) string {
 	return RenderHtml(AbsolutDir(ArticleTpl), data)
 }
 
 func RenderList(data []redis.Z) string {
 	return RenderHtml(AbsolutDir(ListTpl), data)
+}
+
+func RenderNotFoundPage() string {
+	return RenderHtml(AbsolutDir(NotFoundTpl), nil)
 }
 
 func RenderHtml(tplPath string, data interface{}) string {
@@ -44,7 +50,11 @@ func RenderHtml(tplPath string, data interface{}) string {
 			}
 		},
 		"home": func() string {
-			return viper.GetString("app.baseUrl")
+			baseUrl := viper.GetString("app.baseUrl")
+			if baseUrl == "" {
+				baseUrl = "/"
+			}
+			return baseUrl
 		},
 	}).ParseFiles(tplPath)
 	if err != nil {

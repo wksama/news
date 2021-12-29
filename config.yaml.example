@@ -1,9 +1,9 @@
 app:
   debug: false
-  cache: 'file'
-  database: 'sqlite3'
-  baseUrl: '/news'
-  pages: true
+  cache: 'file' # file|redis
+  database: 'sqlite3' # sqlite3|mysql
+  baseUrl: '/news' # Directory domain
+  pages: true # Control hyperlink mode
 
 mysql:
   dsn: 'root:root@tcp(127.0.0.1:3306)/news?charset=utf8mb4&parseTime=True&loc=Local'
@@ -15,4 +15,4 @@ redis:
   dsn: ''
 
 log:
-  file: ''
+  file: '' # There must be empty on GitHub action

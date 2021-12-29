@@ -6,6 +6,7 @@ import (
 	"news/cacher"
 	"news/service/db"
 	"news/service/spider"
+	"news/service/tpl"
 	"news/utils"
 	"os"
 	"sync"
@@ -65,11 +66,13 @@ func Cache() {
 		list = append(list, utils.Model2Z(articleModel))
 		cacheDriver.Store(&articleModel)
 	}
-	html := utils.RenderList(list)
-	err := os.WriteFile(utils.AbsolutDir("/cache/index.html"), []byte(html), 0777)
+	html := tpl.RenderList(list)
+	err := os.WriteFile(tpl.AbsolutDir("/cache/index.html"), []byte(html), 0777)
 	if err != nil {
 		panic(err)
 	}
+
+	_ = os.WriteFile(tpl.AbsolutDir("/cache/404.html"), []byte(tpl.RenderNotFoundPage()), 0777)
 }
 
 //func FetchFlow(url string, waitGroup *sync.WaitGroup) (articleModel model.Article) {

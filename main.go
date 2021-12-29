@@ -28,6 +28,7 @@ func main() {
 	case "serve":
 		fallthrough
 	default:
+		bin.Cache()
 		router.InitRoutes(r)
 		r.Run(":9999")
 	}
