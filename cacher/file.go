@@ -11,6 +11,13 @@ import (
 type File struct {
 }
 
+func (f File) connect() {
+	err := os.MkdirAll(tpl.AbsolutDir("/cache"), 0777)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (f File) Store(articleModel *model.Article) {
 	path := tpl.GetAbsolutePathByDateStr(articleModel.DateStr())
 	if _, err := os.Stat(path); err == nil {

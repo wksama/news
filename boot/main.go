@@ -4,5 +4,5 @@ func Init() {
 	initConfig()
 	initLog()
 	initDatabase()
-	initRedis()
+	//initRedis()
 }

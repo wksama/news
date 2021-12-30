@@ -1,23 +1,26 @@
 package cacher
 
 import (
+	"github.com/spf13/viper"
 	"news/model"
 )
 
 type Cacher interface {
+	connect()
 	Store(articleModel *model.Article)
 	Fetch(dateStr string) string
 	List() string
 }
 
 func New() Cacher {
-	//var d Cacher
-	//cacheDriver := viper.Get("app.cache")
-	//switch cacheDriver {
-	//case "file":
-	//	d = new(File)
-	//case "redis":
-	//	d =
-	//}
-	return new(File)
+	var c Cacher
+	cacheDriver := viper.Get("app.cacher")
+	switch cacheDriver {
+	case "file":
+		c = new(File)
+	case "redis":
+		c = new(Redis)
+	}
+	c.connect()
+	return c
 }

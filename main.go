@@ -30,6 +30,6 @@ func main() {
 	default:
 		bin.Cache()
 		router.InitRoutes(r)
-		r.Run(":9999")
+		_ = r.Run(":9999")
 	}
 }

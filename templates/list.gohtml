@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="referrer" content="never">
     <title>新闻列表</title>
+    <link rel="icon" href="https://ae01.alicdn.com/kf/Hd0ab686ea35a484a8b1d6c40b064b9d1t.png">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <!-- 引入 WeUI CDN 链接 -->
-    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+	<!-- 引入 WeUI CDN 链接 -->
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css" />
     <style>
         .page__bd {
             max-width: 750px;
@@ -28,7 +29,7 @@
             <div class="weui-search-bar__box">
                 <i class="weui-icon-search"></i>
                 <input type="search" class="weui-search-bar__input" id="searchInput" name="q" placeholder="搜索"
-                       required/>
+                       required />
                 <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
             </div>
             <label class="weui-search-bar__label" id="searchText">
@@ -54,7 +55,7 @@
     <div id="articleList">
         {{range .}}
             {{$dateStr := printf "%.0f" .Score}}
-            <a class="weui-cell  weui-cell_access" href="{{path $dateStr}}">
+	        <a class="weui-cell  weui-cell_access" href="{{path $dateStr}}">
                 <div class="weui-cell__bd">
                     <p>{{.Member}}</p>
                 </div>
@@ -70,58 +71,58 @@
 
 <script type="text/javascript">
     $(function () {
-        var $searchBar = $('#searchBar'),
-            $searchResult = $('#searchResult'),
-            $searchText = $('#searchText'),
-            $searchInput = $('#searchInput'),
-            $searchClear = $('#searchClear'),
-            $searchCancel = $('#searchCancel');
-        hideSearchResult()
+	    var $searchBar = $('#searchBar'),
+			    $searchResult = $('#searchResult'),
+			    $searchText = $('#searchText'),
+			    $searchInput = $('#searchInput'),
+			    $searchClear = $('#searchClear'),
+			    $searchCancel = $('#searchCancel');
+	    hideSearchResult()
 
-        function hideSearchResult() {
-            $searchResult.hide();
-            $searchInput.val('');
-        }
+	    function hideSearchResult() {
+		    $searchResult.hide();
+		    $searchInput.val('');
+	    }
 
-        function cancelSearch() {
-            hideSearchResult();
-            $searchBar.removeClass('weui-search-bar_focusing');
-            $searchText.show();
-        }
+	    function cancelSearch() {
+		    hideSearchResult();
+		    $searchBar.removeClass('weui-search-bar_focusing');
+		    $searchText.show();
+	    }
 
-        $searchText.on('click', function () {
-            $searchBar.addClass('weui-search-bar_focusing');
-            $searchInput.focus();
-        });
-        $searchInput
-            .on('blur', function () {
-                if (!this.value.length) cancelSearch();
-            })
-            .on('input', function () {
-                if (this.value.length) {
-                    $searchResult.show();
-                } else {
-                    $searchResult.hide();
-                }
-            })
-        ;
-        $searchClear.on('click', function () {
-            hideSearchResult();
-            $searchInput.focus();
-        });
-        $searchCancel.on('click', function () {
-            cancelSearch();
-            $searchInput.blur();
-        });
+	    $searchText.on('click', function () {
+		    $searchBar.addClass('weui-search-bar_focusing');
+		    $searchInput.focus();
+	    });
+	    $searchInput
+			    .on('blur', function () {
+				    if (!this.value.length) cancelSearch();
+			    })
+			    .on('input', function () {
+				    if (this.value.length) {
+					    $searchResult.show();
+				    } else {
+					    $searchResult.hide();
+				    }
+			    })
+	    ;
+	    $searchClear.on('click', function () {
+		    hideSearchResult();
+		    $searchInput.focus();
+	    });
+	    $searchCancel.on('click', function () {
+		    cancelSearch();
+		    $searchInput.blur();
+	    });
 
-        $('.search-btn').on('click', function (e) {
-            let href = window.location.host
-            let keyword = $('#searchInput').val();
-            if ($(e.target).hasClass('baidu')) {
-                window.open("https://www.baidu.com/s?wd=site:"+ href +" "+ keyword);
-            } else {
-                window.open("https://www.google.com.hk/search?q=site:"+ href +" "+ keyword);
-            }
-        })
+	    $('.search-btn').on('click', function (e) {
+		    let href = window.location.host
+		    let keyword = $('#searchInput').val();
+		    if ($(e.target).hasClass('baidu')) {
+			    window.open("https://www.baidu.com/s?wd=site:" + href + " " + keyword);
+		    } else {
+			    window.open("https://www.google.com.hk/search?q=site:" + href + " " + keyword);
+		    }
+	    })
     });
 </script>

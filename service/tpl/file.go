@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
@@ -32,7 +31,7 @@ func RenderArticle(data utils.Article) string {
 	return RenderHtml(AbsolutDir(ArticleTpl), data)
 }
 
-func RenderList(data []redis.Z) string {
+func RenderList(data []utils.ListItem) string {
 	return RenderHtml(AbsolutDir(ListTpl), data)
 }
 

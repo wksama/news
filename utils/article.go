@@ -17,6 +17,11 @@ type Article struct {
 	Paragraphs []*Paragraph `json:"paragraphs"`
 }
 
+type ListItem struct {
+	Score  float64
+	Member string
+}
+
 type Paragraph struct {
 	Subject string `json:"title"`
 	Bodies  []Body `json:"body"`
@@ -44,6 +49,15 @@ func Model2Z(article model.Article) redis.Z {
 	dateStr := article.DateStr()
 	dateInt, _ := strconv.Atoi(dateStr)
 	return redis.Z{
+		Score:  float64(dateInt),
+		Member: article.FullTitle,
+	}
+}
+
+func Model2ListItem(article model.Article) ListItem {
+	dateStr := article.DateStr()
+	dateInt, _ := strconv.Atoi(dateStr)
+	return ListItem{
 		Score:  float64(dateInt),
 		Member: article.FullTitle,
 	}

@@ -12,8 +12,8 @@ var RC *redis.Client
 var Ctx = context.Background()
 
 func initRedis() {
-	dsn := viper.GetString("redis.dsn")
-	if dsn != "" {
+	if viper.GetString("app.cacher") == "redis" {
+		dsn := viper.GetString("redis.dsn")
 		RC = redis.NewClient(&redis.Options{
 			Addr:     dsn,
 			Password: "", // no password set
