@@ -1,6 +1,6 @@
 app:
   debug: false
-  cache: 'file' # file|redis
+  cacher: 'file' # file|redis
   database: 'sqlite3' # sqlite3|mysql
   baseUrl: '/news' # Directory domain
   pages: true # Control hyperlink mode

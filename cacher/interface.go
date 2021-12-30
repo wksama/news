@@ -16,11 +16,14 @@ func New() Cacher {
 	var c Cacher
 	cacheDriver := viper.Get("app.cacher")
 	switch cacheDriver {
-	case "file":
-		c = new(File)
 	case "redis":
 		c = new(Redis)
+	case "file":
+		fallthrough
+	default:
+		c = new(File)
 	}
+
 	c.connect()
 	return c
 }
