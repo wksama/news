@@ -26,7 +26,7 @@ func GetAbsolutePathByDateStr(dateStr string) string {
 	if err != nil {
 		panic(err)
 	}
-	dir := fmt.Sprintf("%s/cache/%d/%2d", GetRootDir(), date.Year(), int(date.Month()))
+	dir := fmt.Sprintf("%s/cache/%d/%02d", GetRootDir(), date.Year(), int(date.Month()))
 	os.MkdirAll(dir, 0777)
 
 	return fmt.Sprintf("%s/%s", dir, fmt.Sprintf("%s.html", dateStr))
