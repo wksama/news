@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"time"
 )
 
 const ArticleTpl = "/templates/article.gohtml"
@@ -21,7 +22,11 @@ const ListTpl = "/templates/list.gohtml"
 const NotFoundTpl = "/templates/404.gohtml"
 
 func GetAbsolutePathByDateStr(dateStr string) string {
-	dir := fmt.Sprintf("%s/cache/%s/%s", GetRootDir(), dateStr[0:4], dateStr[4:6])
+	date, err := time.Parse("20060102", dateStr)
+	if err != nil {
+		panic(err)
+	}
+	dir := fmt.Sprintf("%s/cache/%d/%d", GetRootDir(), date.Year(), int(date.Month()))
 	os.MkdirAll(dir, 0777)
 
 	return fmt.Sprintf("%s/%s", dir, fmt.Sprintf("%s.html", dateStr))

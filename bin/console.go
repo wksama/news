@@ -49,9 +49,11 @@ func FetchAndStore(url string, group *sync.WaitGroup) {
 	dbDriver := new(db.Database)
 	s := spider.New()
 	articleModel := s.FetchArticle(url)
-	dbDriver.Store(&articleModel)
-	cacheDriver := cacher.New()
-	cacheDriver.Store(&articleModel)
+	if articleModel.DateStr() != "" {
+		dbDriver.Store(&articleModel)
+		cacheDriver := cacher.New()
+		cacheDriver.Store(&articleModel)
+	}
 	if group != nil {
 		group.Done()
 	}

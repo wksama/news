@@ -2,7 +2,6 @@ package spider
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"gorm.io/datatypes"
 	"html/template"
@@ -52,7 +51,10 @@ func (a *Spider) FetchPageList() (urlList []string) {
 
 	doc.Find(ListSelector).Each(func(i int, selection *goquery.Selection) {
 		href, exist := selection.Find("a").Attr("href")
-		if exist {
+		title := selection.Find("a").Text()
+		dateRegexp := regexp.MustCompile(`\d+`)
+		dateStr := dateRegexp.FindString(title)
+		if exist && dateStr != "" {
 			urlList = append(urlList, "https://www.dapenti.com/blog/"+href)
 		}
 	})
@@ -74,8 +76,8 @@ func (a Spider) FetchLatestArticleUrl() (url, dateStr string) {
 		log.Println("拼接最新文章链接")
 		url = "https://www.dapenti.com/blog/" + href
 		title := aNode.Text()
-		flysnowRegexp := regexp.MustCompile(`\d+`)
-		dateStr = flysnowRegexp.FindString(title)
+		dateRegexp := regexp.MustCompile(`\d+`)
+		dateStr = dateRegexp.FindString(title)
 		log.Println("获取文章日期成功")
 	}
 	log.Println("爬取首页成功")
@@ -94,8 +96,8 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 
 	article.FullTitle = strings.ReplaceAll(doc.Find(`.style1 a`).Last().Text(), "喷嚏图卦", "")
 
-	flysnowRegexp := regexp.MustCompile(`\d+`)
-	dateStr := flysnowRegexp.FindString(article.FullTitle)
+	dateRegexp := regexp.MustCompile(`\d+`)
+	dateStr := dateRegexp.FindString(article.FullTitle)
 	dateTime, _ := time.ParseInLocation("20060102", dateStr, time.Local)
 	article.Date = datatypes.Date(dateTime)
 
@@ -133,15 +135,14 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 					src, _ := selection.Find("img").Attr("src")
 					body.Type = "img"
 					body.Content = template.HTML(src)
-				} else if strings.TrimSpace(selection.Text()) != "广告" {
-					if strings.Contains(selection.Text(), "本期图卦由") {
+				} else if selectionHtml, _ := selection.Html(); strings.TrimSpace(selectionHtml) != "" && strings.TrimSpace(selection.Text()) != "广告" {
+					if strings.Contains(selection.Text(), "来源：喷嚏网") ||
+						strings.Contains(selection.Text(), "item.taobao") ||
+						strings.Contains(selection.Text(), "本期图卦由") {
 						return false
 					}
 					body.Type = "text"
 					contentHtml, _ := selection.Html()
-					if strings.Contains(contentHtml, "聰曰") {
-						fmt.Println(11)
-					}
 					body.Content = template.HTML(contentHtml)
 				}
 
@@ -181,6 +182,7 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 	pageStr = strings.ReplaceAll(pageStr, "\r", "")
 	pageStr = strings.ReplaceAll(pageStr, "\n", "")
 	pageStr = strings.ReplaceAll(pageStr, "\t", "")
+	pageStr = strings.ReplaceAll(pageStr, "\u00a0", " ")
 	reg := regexp.MustCompile(`<hr>广告.*<hr><br>`)
 	adStr := reg.FindString(pageStr)
 
