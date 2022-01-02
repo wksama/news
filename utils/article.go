@@ -1,9 +1,13 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 	"html/template"
+	"io/ioutil"
 	"news/model"
 	"strconv"
 	"time"
@@ -61,4 +65,14 @@ func Model2ListItem(article model.Article) ListItem {
 		Score:  float64(dateInt),
 		Member: article.FullTitle,
 	}
+}
+
+func DecodeGBK(s []byte) ([]byte, error) {
+	I := bytes.NewReader(s)
+	O := transform.NewReader(I, simplifiedchinese.GBK.NewDecoder())
+	d, e := ioutil.ReadAll(O)
+	if e != nil {
+		return nil, e
+	}
+	return d, nil
 }

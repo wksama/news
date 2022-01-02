@@ -39,7 +39,7 @@ func (r *Redis) Store(articleModel *model.Article) {
 		Member: articleModel.FullTitle,
 	})
 	articleHtml := tpl.RenderArticle(utils.Model2Article(*articleModel))
-	r.handler.Set(r.ctx, articleModel.DateStr(), articleHtml, -1)
+	r.handler.Set(r.ctx, articleModel.DateStr(), articleHtml, 0)
 }
 
 func (r *Redis) Fetch(dateStr string) string {

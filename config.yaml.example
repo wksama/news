@@ -1,4 +1,5 @@
 app:
+  port: 9999
   debug: false
   cacher: 'file' # file|redis
   database: 'sqlite3' # sqlite3|mysql

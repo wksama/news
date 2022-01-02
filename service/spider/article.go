@@ -1,16 +1,16 @@
 package spider
 
 import (
-	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/henrylee2cn/mahonia"
 	"gorm.io/datatypes"
 	"html/template"
-	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"news/model"
+	"news/utils"
 	"regexp"
 	"strings"
 	"time"
@@ -108,7 +108,14 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 	begin := false
 	paragraph := 0
 	var paragraphs []*Paragraph
-	doc.Find("table.ke-zeroborder p").EachWithBreak(func(i int, selection *goquery.Selection) bool {
+	parent := doc.Find("table.ke-zeroborder").Eq(1).Find("tbody tr:nth-child(2) td")
+	parent.Contents().Each(func(i int, selection *goquery.Selection) {
+		nodeName := goquery.NodeName(selection)
+		if strings.TrimSpace(nodeName) == "#text" || strings.TrimSpace(nodeName) == "a" {
+			selection.WrapHtml("<p></p>")
+		}
+	})
+	parent.Children().Not("ins,script").EachWithBreak(func(i int, selection *goquery.Selection) bool {
 		reg := regexp.MustCompile(`【\d+】`)
 		titleText := reg.FindString(strings.TrimSpace(selection.Text()))
 		if len(titleText) > 0 {
@@ -126,15 +133,16 @@ func (a Spider) FetchArticle(url string) (article model.Article) {
 					src, _ := selection.Find("img").Attr("src")
 					body.Type = "img"
 					body.Content = template.HTML(src)
-				} else if len(selection.Text()) > 0 && strings.TrimSpace(selection.Text()) != "广告" {
-					if strings.Contains(selection.Text(), "来源：喷嚏网") ||
-						strings.Contains(selection.Text(), "item.taobao") ||
-						strings.Contains(selection.Text(), "本期图卦由") {
+				} else if strings.TrimSpace(selection.Text()) != "广告" {
+					if strings.Contains(selection.Text(), "本期图卦由") {
 						return false
 					}
 					body.Type = "text"
 					contentHtml, _ := selection.Html()
-					body.Content = template.HTML(strings.TrimSpace(contentHtml))
+					if strings.Contains(contentHtml, "聰曰") {
+						fmt.Println(11)
+					}
+					body.Content = template.HTML(contentHtml)
 				}
 
 				if len(body.Content) > 0 {
@@ -160,17 +168,19 @@ func (a Spider) getRequestReader(url string) *goquery.Document {
 	if resp.StatusCode != 200 {
 		return nil
 	}
-	enc := mahonia.NewDecoder("gb2312")
-	body := enc.NewReader(resp.Body)
-
-	var bodyBytes bytes.Buffer
-	_, err = io.Copy(&bodyBytes, body)
-	//bodyBytes, err := ioutil.ReadAll(body)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("读取body失败")
-		return nil
+		panic(err)
 	}
-	pageStr := bodyBytes.String()
+	bodyBytes, err = utils.DecodeGBK(bodyBytes)
+	if err != nil {
+		panic(err)
+	}
+
+	pageStr := string(bodyBytes)
+	pageStr = strings.ReplaceAll(pageStr, "\r", "")
+	pageStr = strings.ReplaceAll(pageStr, "\n", "")
+	pageStr = strings.ReplaceAll(pageStr, "\t", "")
 	reg := regexp.MustCompile(`<hr>广告.*<hr><br>`)
 	adStr := reg.FindString(pageStr)
 

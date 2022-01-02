@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"news/bin"
 	"news/boot"
 	"news/router"
@@ -30,6 +31,7 @@ func main() {
 	default:
 		bin.Cache()
 		router.InitRoutes(r)
-		_ = r.Run(":9999")
+		port := viper.GetString("app.port")
+		_ = r.Run(":" + port)
 	}
 }
