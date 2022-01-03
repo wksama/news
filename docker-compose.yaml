@@ -6,7 +6,7 @@ services:
       context: .
     container_name: news
     volumes:
-      - ./config:/config
+      - ./config.yaml:/config.yaml
       - ./cache:/cache
       - ./data:/data
     restart: always

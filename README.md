@@ -87,3 +87,9 @@ $ ./news cache
 ### GitHub pages
 
 配置示例见`config.yaml.example`
+
+### Docker
+
+```shell
+$ docker-compose up -d
+```
