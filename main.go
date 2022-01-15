@@ -12,8 +12,6 @@ import (
 func main() {
 	boot.Init()
 
-	r := gin.Default()
-
 	flag.Parse()
 	runType := flag.Arg(0)
 	switch runType {
@@ -29,6 +27,7 @@ func main() {
 	case "serve":
 		fallthrough
 	default:
+		r := gin.Default()
 		bin.Cache()
 		router.InitRoutes(r)
 		port := viper.GetString("app.port")

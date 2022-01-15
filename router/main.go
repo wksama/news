@@ -11,6 +11,7 @@ func InitRoutes(r *gin.Engine) {
 	r.GET("/date/:date", index.Item)
 
 	r.LoadHTMLFiles("templates/404.gohtml")
+	r.StaticFile("sitemap.xml", "./cache/sitemap.xml")
 	r.NoRoute(func(context *gin.Context) {
 		context.HTML(http.StatusNotFound, "404.gohtml", nil)
 	})

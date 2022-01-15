@@ -2,9 +2,9 @@ package bin
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"news/cacher"
 	"news/service/db"
+	"news/service/sitemap"
 	"news/service/spider"
 	"news/service/tpl"
 	"news/utils"
@@ -63,18 +63,16 @@ func Cache() {
 	database := new(db.Database)
 	articleModels := database.List()
 	cacheDriver := cacher.New()
+	sitemaper := sitemap.New()
 	var list []utils.ListItem
 	for _, articleModel := range articleModels {
-		list = append(list, utils.Model2ListItem(articleModel))
+		item := utils.Model2ListItem(articleModel)
+		list = append(list, item)
 		cacheDriver.Store(&articleModel)
+		sitemaper.Add(sitemap.ListItem2Link(item))
 	}
-	if viper.GetString("app.cacher") == "file" {
-		html := tpl.RenderList(list)
-		err := os.WriteFile(tpl.AbsolutDir("/cache/index.html"), []byte(html), 0777)
-		if err != nil {
-			panic(err)
-		}
-	}
+	sitemaper.Save()
+	cacheDriver.List()
 
-	_ = os.WriteFile(tpl.AbsolutDir("/cache/404.html"), []byte(tpl.RenderNotFoundPage()), 0777)
+	_ = os.WriteFile(utils.AbsolutPath("/cache/404.html"), []byte(tpl.RenderNotFoundPage()), 0777)
 }

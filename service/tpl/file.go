@@ -26,32 +26,28 @@ func GetAbsolutePathByDateStr(dateStr string) string {
 	if err != nil {
 		panic(err)
 	}
-	dir := fmt.Sprintf("%s/cache/%d/%02d", GetRootDir(), date.Year(), int(date.Month()))
-	os.MkdirAll(dir, 0777)
+	dir := fmt.Sprintf("%s/cache/%d/%02d", utils.ProjectRoot(), date.Year(), int(date.Month()))
+	_ = os.MkdirAll(dir, 0777)
 
 	return fmt.Sprintf("%s/%s", dir, fmt.Sprintf("%s.html", dateStr))
 }
 
 func RenderArticle(data utils.Article) string {
-	return RenderHtml(AbsolutDir(ArticleTpl), data)
+	return RenderHtml(utils.AbsolutPath(ArticleTpl), data)
 }
 
 func RenderList(data []utils.ListItem) string {
-	return RenderHtml(AbsolutDir(ListTpl), data)
+	return RenderHtml(utils.AbsolutPath(ListTpl), data)
 }
 
 func RenderNotFoundPage() string {
-	return RenderHtml(AbsolutDir(NotFoundTpl), nil)
+	return RenderHtml(utils.AbsolutPath(NotFoundTpl), nil)
 }
 
 func RenderHtml(tplPath string, data interface{}) string {
 	tpl, err := template.New(filepath.Base(tplPath)).Funcs(template.FuncMap{
 		"path": func(dateStr string) string {
-			if viper.GetBool("app.pages") {
-				return fmt.Sprintf("%s/%s/%s/%s", viper.GetString("app.baseUrl"), dateStr[0:4], dateStr[4:6], dateStr)
-			} else {
-				return fmt.Sprintf("%s/date/%s", viper.GetString("app.baseUrl"), dateStr)
-			}
+			return GetUrlByDateStr(dateStr)
 		},
 		"home": func() string {
 			baseUrl := viper.GetString("app.baseUrl")
@@ -85,16 +81,12 @@ func RenderHtml(tplPath string, data interface{}) string {
 	return minifiedBuffer.String()
 }
 
-func GetRootDir() string {
-	pwd, err := os.Getwd()
-	if err != nil {
-		panic(err)
+func GetUrlByDateStr(dateStr string) string {
+	if viper.GetBool("app.pages") {
+		return fmt.Sprintf("%s/%s/%s/%s", viper.GetString("app.baseUrl"), dateStr[0:4], dateStr[4:6], dateStr)
+	} else {
+		return fmt.Sprintf("%s/date/%s", viper.GetString("app.baseUrl"), dateStr)
 	}
-	return pwd
-}
-
-func AbsolutDir(relativePath string) string {
-	return GetRootDir() + relativePath
 }
 
 //func GetPageContentByDateStr(dateStr string) (pageStr string) {
@@ -126,7 +118,7 @@ func AbsolutDir(relativePath string) string {
 //}
 //func GetSaveDir(article model.Article) string {
 //	articleDate := time.Time(article.Date)
-//	dir := fmt.Sprintf("%s/cache/%d/%d/%d", GetRootDir(), articleDate.Year(), articleDate.Month(), articleDate.Day())
+//	dir := fmt.Sprintf("%s/cache/%d/%d/%d", ProjectRoot(), articleDate.Year(), articleDate.Month(), articleDate.Day())
 //	os.MkdirAll(dir, 0777)
 //
 //	return dir

@@ -3,7 +3,7 @@ app:
   debug: false
   cacher: 'file' # file|redis
   database: 'sqlite3' # sqlite3|mysql
-  baseUrl: '/news' # Directory domain
+  baseUrl: 'https://wenkechen.github.io/news/' # Directory domain
   pages: true # Control hyperlink mode
 
 mysql:
