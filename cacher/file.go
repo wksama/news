@@ -96,7 +96,7 @@ func (f File) List() string {
 			dateArr = append(dateArr, dateStr)
 		}
 		sort.Slice(dateArr, func(i, j int) bool {
-			return dateArr[i] < dateArr[j]
+			return dateArr[i] > dateArr[j]
 		})
 		var list []utils.ListItem
 		for _, dateStr := range dateArr {

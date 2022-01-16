@@ -93,3 +93,8 @@ $ ./news cache
 ```shell
 $ docker-compose up -d
 ```
+
+
+## Sponsors
+
+[![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSourceSupport)
