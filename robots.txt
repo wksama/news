@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://wenkechen.github.io/news/sitemap.xml
