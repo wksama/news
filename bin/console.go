@@ -6,9 +6,7 @@ import (
 	"news/service/db"
 	"news/service/sitemap"
 	"news/service/spider"
-	"news/service/tpl"
 	"news/utils"
-	"os"
 	"sync"
 	"time"
 )
@@ -73,6 +71,4 @@ func Cache() {
 	}
 	sitemaper.Save()
 	cacheDriver.List()
-
-	_ = os.WriteFile(utils.AbsolutPath("/cache/404.html"), []byte(tpl.RenderNotFoundPage()), 0777)
 }
