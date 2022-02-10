@@ -40,7 +40,7 @@ func New() *Sitemap {
 
 	sitemap.Links = append(sitemap.Links, Link{
 		Loc:      viper.GetString("app.baseUrl"),
-		Priority: 1.0,
+		Priority: 0.9,
 	})
 
 	return sitemap
