@@ -7,3 +7,6 @@ news.iml
 config.yaml
 news.log
 news.exe
+cache
+!cache/404.html
+!cache/robots.txt
