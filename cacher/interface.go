@@ -12,18 +12,22 @@ type Cacher interface {
 	List() string
 }
 
+var c Cacher
+
 func New() Cacher {
-	var c Cacher
-	cacheDriver := viper.Get("app.cacher")
-	switch cacheDriver {
-	case "redis":
-		c = new(Redis)
-	case "file":
-		fallthrough
-	default:
-		c = new(File)
+	if c == nil {
+		cacheDriver := viper.Get("app.cacher")
+		switch cacheDriver {
+		case "redis":
+			c = new(Redis)
+		case "file":
+			fallthrough
+		default:
+			c = new(File)
+		}
+
+		c.connect()
 	}
 
-	c.connect()
 	return c
 }
